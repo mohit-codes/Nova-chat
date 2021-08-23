@@ -1,6 +1,7 @@
 export const Input = ({ callback, placeholder, value, type }) => {
   return (
     <input
+      required
       type={type}
       placeholder={placeholder}
       value={value}
