@@ -20,9 +20,35 @@ export const AuthProvider = ({ children }) => {
     }
     return { user, token, message };
   }
+  async function signupWithUserCredentials(name, email, password) {
+    const {
+      data: { message, user, token, status },
+    } = await axios.post(`${BASE_URL}/users/signup`, {
+      name: name,
+      email: email,
+      password: password,
+    });
+    if (status) {
+      setUser(user);
+    }
+    return { user, token, message };
+  }
+
+  function emailValidate(email) {
+    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+      email
+    );
+  }
 
   return (
-    <AuthContext.Provider value={{ user, loginWithUserCredentials }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loginWithUserCredentials,
+        emailValidate,
+        signupWithUserCredentials,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
