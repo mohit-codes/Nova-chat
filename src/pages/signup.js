@@ -11,6 +11,7 @@ export const Signup = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const matchPassword = confirmPassword === password && confirmPassword !== "";
@@ -24,6 +25,7 @@ export const Signup = () => {
     if (emailValidate(email)) {
       if (isPasswordValid) {
         if (matchPassword) {
+          setLoading(true);
           const { user, message } = await signupWithUserCredentials(
             name,
             email,
@@ -122,7 +124,7 @@ export const Signup = () => {
               }`}
               disabled={email === "" || password === "" || name === ""}
             >
-              Sign up
+              {loading ? "Signing Up..." : "Sign up"}
             </button>
           </form>
           <p className="my-3">OR</p>

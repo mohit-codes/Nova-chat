@@ -9,19 +9,23 @@ export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const loginHandler = async (event) => {
     event.preventDefault();
+    setLoading(true);
     if (emailValidate(email)) {
       const { user, message } = await loginWithUserCredentials(email, password);
       if (user == null) {
         setError(message);
+        setLoading(false);
         return;
       }
       navigate("home", { replace: true });
       return;
     }
     setError("Enter Valid Email");
+    setLoading(false);
   };
 
   return (
@@ -77,7 +81,7 @@ export const Login = () => {
               }`}
               disabled={email === "" || password === ""}
             >
-              Login
+              {loading ? "Logging In..." : "Login"}
             </button>
           </form>
           <p className="my-3">OR</p>
