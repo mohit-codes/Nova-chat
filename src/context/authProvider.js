@@ -2,11 +2,12 @@ import axios from "axios";
 import React, { createContext, useContext, useState } from "react";
 import { BASE_URL } from "../utils/utils";
 import PropTypes from "prop-types";
+import { navigate } from "@reach/router";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(JSON.parse(localStorage?.getItem("user")));
 
   async function loginWithUserCredentials(email, password) {
     const {
@@ -17,6 +18,8 @@ export const AuthProvider = ({ children }) => {
     });
     if (status) {
       setUser(user);
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", JSON.stringify(token));
     }
     return { user, token, message };
   }
@@ -40,6 +43,10 @@ export const AuthProvider = ({ children }) => {
     );
   }
 
+  const logout = () => {
+    navigate("/", { replace: true });
+    localStorage.clear();
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -47,6 +54,7 @@ export const AuthProvider = ({ children }) => {
         loginWithUserCredentials,
         emailValidate,
         signupWithUserCredentials,
+        logout,
       }}
     >
       {children}
