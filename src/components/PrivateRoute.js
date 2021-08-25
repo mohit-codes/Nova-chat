@@ -1,11 +1,15 @@
-import { Navigate, Route } from "react-router-dom";
-import { useAuth } from "../Context/AuthProvider";
+import { useNavigate } from "@reach/router";
+import { useEffect } from "react";
+import { useAuth } from "../context/authProvider";
+import { Home } from "../pages";
 
-export function PrivateRoute({ path, ...props }) {
+export function PrivateRoute() {
   const { user } = useAuth();
-  return user !== null ? (
-    <Route {...props} path={path} />
-  ) : (
-    <Navigate state={{ from: path }} replace to="/login" />
-  );
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (user == null) {
+      navigate("/", { replace: true });
+    }
+  }, []);
+  return <Home />;
 }
