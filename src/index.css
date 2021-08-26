@@ -2,9 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://fonts.googleapis.com/css?family=Red+Hat+Display:400,500,900&display=swap");
+
+body {
+  font-family: Red hat Display, sans-serif;
+}
+
 input::-ms-reveal,
 input::-ms-clear {
   display: none;
+}
+input,
+textarea {
+  outline: none;
+}
+
+i {
+  cursor: pointer;
 }
 
 @media (min-width: 768px) {
