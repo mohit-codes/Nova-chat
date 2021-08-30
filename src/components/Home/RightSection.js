@@ -2,21 +2,24 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/authProvider";
+import { useData } from "../../context/dataProvider";
 import { useSocket } from "../../context/socket";
 import { BASE_URL } from "../../utils/utils";
+import { Spinner } from "../Spinner";
 
-export const RightSection = ({ recipient }) => {
+export const RightSection = ({ setRightSide, recipient }) => {
   const { user, setUser } = useAuth();
+  const { removeRecipient } = useData();
   const headerTitle = recipient === "saved" ? "Saved Messages" : recipient.name;
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [isOnline, setIsOnline] = useState(false);
   const socket = useSocket();
+
   useEffect(async () => {
     if (recipient !== "saved") {
-      socket.on("message", (res) => {
-        console.log(res);
-      });
       setLoading(true);
       const {
         data: { messages: chats },
@@ -48,23 +51,73 @@ export const RightSection = ({ recipient }) => {
     console.log(res);
   };
 
+  const deleteChatHandler = async () => {
+    const res = await axios.delete(`${BASE_URL}/users/deleteRecipient`, {
+      data: {
+        senderId: user._id,
+        recipientId: recipient._id,
+      },
+    });
+    removeRecipient(recipient._id);
+    setRightSide(null);
+  };
+
   const sendHandler = async (e) => {
     e.preventDefault();
     socket.emit("sendMessage", {
       senderId: user._id,
-      receiverEmail: recipient.email,
+      receiver: recipient,
       message: message,
     });
   };
 
   return (
     <div className="shadow-lg h-full flex flex-col">
-      <div className="w-full px-3 py-2 shadow-md h-12 rounded-tr-md border-gray-400 bg-white font-medium">
+      <div className="w-full px-3 py-2 shadow-md h-12 rounded-tr-md  bg-white font-medium">
         {headerTitle}
+        {recipient !== "saved" && (
+          <i
+            className="float-right fa fa-ellipsis-v"
+            onClick={() => setShowMenu(!showMenu)}
+          ></i>
+        )}
+        {showMenu && (
+          <div className="lg:fixed lg:right-40 bg-background  text-white rounded-md">
+            <button
+              className="border-t-2 border-b-2 border-gray-300 py-1 px-2"
+              onClick={() => deleteChatHandler()}
+            >
+              Delete Chat
+            </button>
+          </div>
+        )}
       </div>
-      <div className="px-3 pt-3 h-full shadow-inner">
+
+      <div
+        id="messages"
+        className="overflow-y-auto px-3 pt-3 h-full shadow-inner"
+      >
         {recipient !== "saved" ? (
-          <div>asd</div>
+          loading ? (
+            <div className="flex justify-center">
+              <Spinner />
+            </div>
+          ) : (
+            messages.map((msg) => {
+              return (
+                <div
+                  key={msg.messageId}
+                  className={`mb-3 w-min whitespace-nowrap py-2 px-3 rounded-3xl  shadow-xl  ${
+                    msg.sender.name === user.name
+                      ? "ml-auto bg-background text-white rounded-br-none"
+                      : "text-black bg-white rounded-bl-none"
+                  }`}
+                >
+                  {msg.message}
+                </div>
+              );
+            })
+          )
         ) : (
           messages.map((msg) => {
             return (
