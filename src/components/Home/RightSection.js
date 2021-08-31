@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
+import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/authProvider";
 import { useData } from "../../context/dataProvider";
 import { useSocket } from "../../context/socket";
-import { BASE_URL } from "../../utils/utils";
+import { BASE_URL, scrollBottom } from "../../utils/utils";
 import { Spinner } from "../Spinner";
 
 export const RightSection = ({ setRightSide, recipient }) => {
@@ -18,6 +19,13 @@ export const RightSection = ({ setRightSide, recipient }) => {
   const [isOnline, setIsOnline] = useState(false);
   const socket = useSocket();
 
+  useEffect(() => {
+    socket.on("message", (info) => {
+      console.log(info);
+      setMessages((prevState) => [...prevState, info]);
+      scrollBottom("messages");
+    });
+  }, []);
   useEffect(async () => {
     if (recipient !== "saved") {
       setLoading(true);
@@ -30,6 +38,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
       console.log(chats);
       setMessages(chats);
       setLoading(false);
+      scrollBottom("messages");
     } else {
       setMessages(user.savedMessages);
     }
@@ -41,7 +50,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
       id: messages.length + 1,
       message: message,
     };
-    setMessages([...messages, msgObj]);
+    setMessages((prevState) => [...prevState, msgObj]);
     setUser({ ...user, savedMessages: [...messages, msgObj] });
     setMessage("");
     const res = await axios.post(`${BASE_URL}/users/saveMessage`, {
@@ -64,8 +73,9 @@ export const RightSection = ({ setRightSide, recipient }) => {
 
   const sendHandler = async (e) => {
     e.preventDefault();
+    setMessage("");
     socket.emit("sendMessage", {
-      senderId: user._id,
+      sender: user,
       receiver: recipient,
       message: message,
     });
@@ -73,7 +83,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
 
   return (
     <div className="shadow-lg h-full flex flex-col">
-      <div className="w-full px-3 py-2 shadow-md h-12 rounded-tr-md  bg-white font-medium">
+      <div className=" z-10 w-full px-3 py-2 shadow-md h-12 rounded-tr-md  bg-white font-medium">
         {headerTitle}
         {recipient !== "saved" && (
           <i
@@ -104,6 +114,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
             </div>
           ) : (
             messages.map((msg) => {
+              const time = dayjs(msg.createdAt).format("h.mm a");
               return (
                 <div
                   key={msg.messageId}
@@ -113,19 +124,22 @@ export const RightSection = ({ setRightSide, recipient }) => {
                       : "text-black bg-white rounded-bl-none"
                   }`}
                 >
-                  {msg.message}
+                  <span className="mr-2">{msg.message}</span>{" "}
+                  <span className="text-exs">{time}</span>
                 </div>
               );
             })
           )
         ) : (
           messages.map((msg) => {
+            const time = dayjs(msg.createdAt).format("h.mm a");
             return (
               <div
                 key={msg.id}
-                className="mb-3 ml-auto py-2 px-3 max-w-min rounded-3xl rounded-br-none shadow-xl bg-background text-white"
+                className="mb-3 whitespace-nowrap ml-auto py-2 px-3 w-min rounded-3xl rounded-br-none shadow-xl bg-background text-white"
               >
-                {msg.message}
+                <span className="mr-2">{msg.message}</span>{" "}
+                <span className="text-exs">{time}</span>
               </div>
             );
           })
@@ -148,7 +162,10 @@ export const RightSection = ({ setRightSide, recipient }) => {
 
           <button
             type="submit"
-            className="rounded-full shadow-lg px-2 h-10 ml-3  "
+            disabled={message === ""}
+            className={`rounded-full shadow-lg px-2 h-10 ml-3 ${
+              message === "" ? "cursor-not-allowed" : "cursor-pointer"
+            }`}
           >
             <i className="fa fa-send text-lg mr-2"></i>Send
           </button>
