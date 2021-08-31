@@ -3,7 +3,11 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      fontSize: {
+        exs: "0.6rem",
+      },
       colors: {
+        back: "#F7F7F7",
         background: "#2A363F",
         cyanShade: "#6ED9A0",
         whiteShade: "#f6f8f7",
