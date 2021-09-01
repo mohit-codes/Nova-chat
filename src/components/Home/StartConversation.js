@@ -22,6 +22,7 @@ export const StartConversation = ({ setShowStartMessage, addRecipient }) => {
           senderEmail: user.email,
         });
         addRecipient(recipient);
+        setShowStartMessage(false);
         return;
       }
       setError("Recipient not found");
