@@ -55,6 +55,7 @@ export const AuthProvider = ({ children }) => {
         emailValidate,
         signupWithUserCredentials,
         logout,
+        setUser,
       }}
     >
       {children}

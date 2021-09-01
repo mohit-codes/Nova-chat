@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "../context/authProvider";
+import { useAuth } from "../../context/authProvider";
 
 export const LeftUpperHeader = () => {
   const { user, logout } = useAuth();
