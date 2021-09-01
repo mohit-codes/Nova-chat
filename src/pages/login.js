@@ -32,9 +32,9 @@ export const Login = () => {
     <div className="min-h-screen pt-24 background-gif">
       <div className="text-center mr-auto ml-auto bg-white max-w-sm rounded-md">
         <div className="pt-7">
-          <h1 className="md:text-5xl font-bold text-2xl">Nova Chat</h1>
+          <h1 className="md:text-5xl font-bold text-2xl">Nova Chat </h1>
         </div>
-        <div className=" py-10 px-3 ">
+        <div className=" py-10 px-3 shadow-lg">
           {error !== "" && <p className="text-red-600 mb-2">{error}</p>}
           <form onSubmit={(event) => loginHandler(event)} className="">
             <div>
@@ -48,7 +48,7 @@ export const Login = () => {
                 }}
               />
             </div>
-            <div className="mt-5 border-2 border-black w-72 py-2 px-3 text-left  rounded-md ml-9">
+            <div className="flex items-center mt-5 border-2 border-black w-72 py-2 px-3 text-left  rounded-md ml-9">
               <input
                 required
                 type={showPassword ? "text" : "password"}
@@ -63,12 +63,12 @@ export const Login = () => {
               {showPassword ? (
                 <i
                   onClick={() => setShowPassword(!showPassword)}
-                  className="fa fa-eye-slash ml-14 cursor-pointer"
+                  className="fa fa-eye-slash ml-auto cursor-pointer"
                 />
               ) : (
                 <i
                   onClick={() => setShowPassword(!showPassword)}
-                  className="fa fa-eye ml-14 cursor-pointer"
+                  className="fa fa-eye ml-auto cursor-pointer"
                 />
               )}
             </div>
