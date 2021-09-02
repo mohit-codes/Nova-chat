@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-vars */
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useAxiosGet } from "../hooks/useAxiosGet";
 import { BASE_URL } from "../utils/utils";
 import { useAuth } from "./authProvider";
 
@@ -32,16 +30,15 @@ export const DataProvider = ({ children }) => {
 
   const addRecipient = (item) => {
     setRecipients((prevData) => [...prevData, item]);
-    console.log(recipients);
   };
 
   const removeRecipient = (id) => {
     setRecipients((prevData) => prevData.filter((obj) => obj._id !== id));
   };
-  // console.log(recipients);
+
   return (
     <DataContext.Provider
-      value={{ recipients, addRecipient, groups, removeRecipient }}
+      value={{ loading, recipients, addRecipient, groups, removeRecipient }}
     >
       {children}
     </DataContext.Provider>
