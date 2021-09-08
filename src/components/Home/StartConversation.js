@@ -44,7 +44,13 @@ export const StartConversation = ({ setShowStartMessage, addRecipient }) => {
             setEmail(e.target.value);
           }}
         />
-        <button type="submit" className="rounded-full px-3 py-1 shadow-md">
+        <button
+          type="submit"
+          disabled={email === ""}
+          className={`rounded-full px-3 py-1 shadow-md ${
+            email !== "" ? "cursor-pointer" : "cursor-not-allowed"
+          }`}
+        >
           Start
         </button>
         <i
