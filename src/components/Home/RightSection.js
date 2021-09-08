@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/authProvider";
 import { useData } from "../../context/dataProvider";
 import { useSocket } from "../../context/socket";
-import { BASE_URL, scrollBottom } from "../../utils/utils";
+import { BASE_URL, fetchChats, scrollBottom } from "../../utils/utils";
 import { Spinner } from "../Spinner";
 const emojis = require("emojis-list").slice(301);
 
@@ -30,12 +30,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
   useEffect(async () => {
     if (recipient !== "saved") {
       setLoading(true);
-      const {
-        data: { messages: chats },
-      } = await axios.post(`${BASE_URL}/messages/get_messages`, {
-        userId: user._id,
-        receiverId: recipient._id,
-      });
+      const chats = await fetchChats(user._id, recipient._id);
       setMessages(chats);
       setLoading(false);
       scrollBottom("messages");
