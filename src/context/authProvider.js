@@ -8,6 +8,24 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(JSON.parse(localStorage?.getItem("user")));
+  const [token, setToken] = useState(
+    JSON.parse(localStorage?.getItem("token"))
+  );
+
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  }
+
+  axios.interceptors.response.use(undefined, function (error) {
+    if (
+      error.response.status === 401 ||
+      error.response.status === 403 ||
+      error.response.data.message === "Invalid Token"
+    ) {
+      logout();
+    }
+    return Promise.reject(error);
+  });
 
   async function loginWithUserCredentials(email, password) {
     const {
@@ -18,6 +36,8 @@ export const AuthProvider = ({ children }) => {
     });
     if (status) {
       setUser(user);
+      setToken(token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", JSON.stringify(token));
     }
@@ -33,6 +53,10 @@ export const AuthProvider = ({ children }) => {
     });
     if (status) {
       setUser(user);
+      setToken(token);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", JSON.stringify(token));
     }
     return { user, token, message };
   }
@@ -44,8 +68,9 @@ export const AuthProvider = ({ children }) => {
   }
 
   const logout = () => {
-    navigate("/", { replace: true });
+    axios.defaults.headers.common["Authorization"] = null;
     localStorage.clear();
+    navigate("/", { replace: true });
   };
   return (
     <AuthContext.Provider

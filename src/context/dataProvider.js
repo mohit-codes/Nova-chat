@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-vars */
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useAxiosGet } from "../hooks/useAxiosGet";
 import { BASE_URL } from "../utils/utils";
 import { useAuth } from "./authProvider";
 
@@ -20,7 +18,7 @@ export const DataProvider = ({ children }) => {
       setLoading(false);
       setLoading(true);
       const secondResponse = await axios.get(
-        `${BASE_URL}/users/recipients/${user._id}`
+        `${BASE_URL}/users/groups/${user._id}`
       );
       setGroups(secondResponse.data.groups);
       setLoading(false);
@@ -32,16 +30,30 @@ export const DataProvider = ({ children }) => {
 
   const addRecipient = (item) => {
     setRecipients((prevData) => [...prevData, item]);
-    console.log(recipients);
   };
 
   const removeRecipient = (id) => {
     setRecipients((prevData) => prevData.filter((obj) => obj._id !== id));
   };
-  // console.log(recipients);
+
+  const addGroup = (item) => {
+    setGroups((prevData) => [...prevData, item]);
+  };
+
+  const removeGroup = (id) => {
+    setGroups((prevData) => prevData.filter((obj) => obj._id !== id));
+  };
   return (
     <DataContext.Provider
-      value={{ recipients, addRecipient, groups, removeRecipient }}
+      value={{
+        loading,
+        recipients,
+        addRecipient,
+        groups,
+        addGroup,
+        removeGroup,
+        removeRecipient,
+      }}
     >
       {children}
     </DataContext.Provider>

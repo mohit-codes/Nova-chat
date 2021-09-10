@@ -10,12 +10,15 @@ import {
 import { useAuth } from "../../context/authProvider";
 import { useSocket } from "../../context/socket";
 import { useData } from "../../context/dataProvider";
+import { CreateGroupForm } from "./CreateGroupForm";
 
 export const LeftSection = ({ setRightSide }) => {
   const { user } = useAuth();
   const socket = useSocket();
   const [showStartMessage, setShowStartMessage] = useState(false);
-  const { recipients, addRecipient } = useData();
+  const [showCreateGroupForm, setShowCreateGroupForm] = useState(false);
+  const { groups, recipients, addRecipient } = useData();
+
   let flag = true;
   useEffect(() => {
     // socket.on("onlineUsers", (res) => {
@@ -28,7 +31,7 @@ export const LeftSection = ({ setRightSide }) => {
       }
     });
   }, [flag]);
-
+  console.log(user, JSON.parse(localStorage?.getItem("user")));
   return (
     <div className="flex-col flex w-1/3">
       <LeftUpperHeader />
@@ -40,12 +43,18 @@ export const LeftSection = ({ setRightSide }) => {
             placeholder="search"
           />
         </div>
-        <CreateMenu setShowStartMessage={setShowStartMessage} />
+        <CreateMenu
+          setShowStartMessage={setShowStartMessage}
+          setShowCreateGroupForm={setShowCreateGroupForm}
+        />
         {showStartMessage && (
           <StartConversation
             addRecipient={addRecipient}
             setShowStartMessage={setShowStartMessage}
           />
+        )}
+        {showCreateGroupForm && (
+          <CreateGroupForm setShowCreateGroupForm={setShowCreateGroupForm} />
         )}
         <SavedMessagesTile callback={() => setRightSide("saved")} />
         {recipients?.map((recipient) => {
@@ -55,6 +64,16 @@ export const LeftSection = ({ setRightSide }) => {
               key={recipient._id}
             >
               {recipient.name}
+            </ChatCardWrapper>
+          );
+        })}
+        {groups?.map((group) => {
+          return (
+            <ChatCardWrapper
+              callback={() => setRightSide(group)}
+              key={group._id}
+            >
+              {group.name}
             </ChatCardWrapper>
           );
         })}
