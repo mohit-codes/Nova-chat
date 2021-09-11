@@ -17,7 +17,7 @@ export const LeftSection = ({ setRightSide }) => {
   const socket = useSocket();
   const [showStartMessage, setShowStartMessage] = useState(false);
   const [showCreateGroupForm, setShowCreateGroupForm] = useState(false);
-  const { groups, recipients, addRecipient } = useData();
+  const { groups, recipients, addRecipient, addGroup } = useData();
 
   let flag = true;
   useEffect(() => {
@@ -31,9 +31,8 @@ export const LeftSection = ({ setRightSide }) => {
       }
     });
   }, [flag]);
-  console.log(user, JSON.parse(localStorage?.getItem("user")));
   return (
-    <div className="flex-col flex w-1/3">
+    <div className="flex-col flex w-1/3" id="leftSection">
       <LeftUpperHeader />
       <div className="overflow-y-auto h-full">
         <div className="px-3 py-2">
