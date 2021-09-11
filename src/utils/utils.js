@@ -17,7 +17,9 @@ export async function fetchChats(userId, recipientId) {
   return chats;
 }
 
-export async function deleteUser(userId) {
-  const { data: response } = await axios.delete(`${BASE_URL}/users/${userId}`);
+export async function axiosDelete(endpoint, id) {
+  const { data: response } = await axios.delete(
+    `${BASE_URL}/${endpoint}/${id}`
+  );
   return response;
 }
