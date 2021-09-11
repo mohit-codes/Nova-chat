@@ -51,7 +51,7 @@ export const StartConversation = ({ setShowStartMessage, addRecipient }) => {
             email !== "" ? "cursor-pointer" : "cursor-not-allowed"
           }`}
         >
-          Start
+          Chat
         </button>
         <i
           onClick={() => setShowStartMessage(false)}
