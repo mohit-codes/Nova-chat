@@ -3,16 +3,16 @@ import axios from "axios";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/authProvider";
-import { useData } from "../../context/dataProvider";
 import { useSocket } from "../../context/socket";
 import { BASE_URL, fetchChats, scrollBottom } from "../../utils/utils";
 import { Spinner } from "../Spinner";
+import { ChatMenu } from "./ChatMenu";
 import { Info } from "./Info";
 const emojis = require("emojis-list").slice(301);
 
 export const RightSection = ({ setRightSide, recipient }) => {
   const { user, setUser } = useAuth();
-  const { removeRecipient } = useData();
+
   const headerTitle = recipient === "saved" ? "Saved Messages" : recipient.name;
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
@@ -23,6 +23,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
   const [showRecipientDetails, setShowRecipientDetails] = useState(false);
   const socket = useSocket();
   let date;
+
   useEffect(() => {
     socket.on("message", (info) => {
       setMessages((prevState) => [...prevState, info]);
@@ -56,17 +57,6 @@ export const RightSection = ({ setRightSide, recipient }) => {
     console.log(res);
   };
 
-  const deleteChatHandler = async () => {
-    const res = await axios.delete(`${BASE_URL}/users/deleteRecipient`, {
-      data: {
-        senderId: user._id,
-        recipientId: recipient._id,
-      },
-    });
-    removeRecipient(recipient._id);
-    setRightSide(null);
-  };
-
   const sendHandler = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -88,20 +78,12 @@ export const RightSection = ({ setRightSide, recipient }) => {
             ></i>
           )}
           {showMenu && (
-            <div className="max-w-min ml-auto whitespace-nowrap bg-background text-sm z-20 text-white rounded-md cursor-pointer">
-              <div
-                className="py-1 px-2 "
-                onClick={() => {
-                  setShowRecipientDetails(true);
-                  setShowMenu(false);
-                }}
-              >
-                Show Info
-              </div>
-              <div className="py-1 px-2" onClick={() => deleteChatHandler()}>
-                Delete Chat
-              </div>
-            </div>
+            <ChatMenu
+              recipient={recipient}
+              setShowRecipientDetails={setShowRecipientDetails}
+              setShowMenu={setShowMenu}
+              setRightSide={setRightSide}
+            />
           )}
         </div>
 
@@ -203,7 +185,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
             <button
               type="submit"
               disabled={message === ""}
-              className={`rounded-full whitespace-nowrap shadow-lg px-2 h-10 ml-3 ${
+              className={`bg-white rounded-full whitespace-nowrap shadow-lg px-2 h-10 ml-3 ${
                 message === "" ? "cursor-not-allowed" : "cursor-pointer"
               }`}
             >
@@ -215,6 +197,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
       {showRecipientDetails && (
         <Info
           recipient={recipient}
+          setRightSide={setRightSide}
           setShowRecipientDetails={setShowRecipientDetails}
         />
       )}
