@@ -24,7 +24,7 @@ export const UpdateGroupInfoForm = ({ group, isAdmin }) => {
   };
   return (
     <form onSubmit={(e) => updateHandler(e)}>
-      <div className="border-2 border-gray-200 mt-4 px-3 py-2">
+      <div className="border-2 border-gray-200 bg-white mt-4 px-3 py-2">
         <div>
           <span className="font-medium"> Name </span>{" "}
           {isAdmin && (
@@ -66,7 +66,7 @@ export const UpdateGroupInfoForm = ({ group, isAdmin }) => {
           <p>{name} </p>
         )}
       </div>
-      <div className="mt-4 px-3 py-2 border-2 border-gray-200">
+      <div className="mt-4 px-3 py-2 border-2 border-gray-200 bg-white">
         <div>
           <span className="font-medium"> Description </span>{" "}
           {isAdmin && (

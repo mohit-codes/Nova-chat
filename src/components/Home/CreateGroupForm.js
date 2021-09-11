@@ -55,7 +55,7 @@ export const CreateGroupForm = ({ setShowCreateGroupForm }) => {
         <button
           type="submit"
           disabled={name === ""}
-          className={`rounded-full px-3 py-1 shadow-md ${
+          className={`bg-white rounded-full px-3 py-1 shadow-md ${
             name !== "" ? "cursor-pointer" : "cursor-not-allowed"
           }`}
         >
