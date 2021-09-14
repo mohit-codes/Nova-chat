@@ -40,7 +40,9 @@ export const Info = ({ recipient, setRightSide, setShowRecipientDetails }) => {
       <div className="flex flex-col overflow-y-auto h-550">
         <div className="border-2 border-gray-200 mt-4 px-3 py-2 text-sm bg-white">
           <i className="far fa-calendar-alt mr-2"></i>
-          <span>{`Created on ${date} at ${time}`}</span>
+          <span>{`${
+            isGroup ? "Created" : "Joined"
+          } on ${date} at ${time}`}</span>
         </div>
         {isGroup && <UpdateGroupInfoForm group={recipient} isAdmin={isAdmin} />}
         {isGroup && <GroupMembers group={recipient} isAdmin={isAdmin} />}
