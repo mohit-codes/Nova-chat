@@ -12,7 +12,7 @@ export const ChatMenu = ({
   setRightSide,
 }) => {
   const { user } = useAuth();
-  const { removeRecipient } = useData();
+  const { removeRecipient, removeGroup } = useData();
   const isGroup = recipient?.groupCode ? true : false;
   const closeMenu = () => setShowMenu(false);
   useEffect(() => {
@@ -34,6 +34,14 @@ export const ChatMenu = ({
     setRightSide(null);
   };
 
+  const leaveGroupHandler = async () => {
+    const res = await axios.post(`${BASE_URL}/groups/remove_member`, {
+      groupId: recipient._id,
+      memberId: user._id,
+    });
+    removeGroup(recipient._id);
+    setRightSide(null);
+  };
   return (
     <div className="max-w-min ml-auto whitespace-nowrap bg-background text-sm z-20 text-white rounded-md cursor-pointer">
       <div
@@ -46,7 +54,7 @@ export const ChatMenu = ({
         Show Info
       </div>
       {isGroup ? (
-        <div className="py-1 px-2" onClick={() => deleteChatHandler()}>
+        <div className="py-1 px-2" onClick={() => leaveGroupHandler()}>
           Leave group
         </div>
       ) : (
