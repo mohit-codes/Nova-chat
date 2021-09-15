@@ -11,13 +11,14 @@ import { useAuth } from "../../context/authProvider";
 import { useSocket } from "../../context/socket";
 import { useData } from "../../context/dataProvider";
 import { CreateGroupForm } from "./CreateGroupForm";
+import { Spinner } from "../Spinner";
 
 export const LeftSection = ({ setRightSide }) => {
   const { user } = useAuth();
   const socket = useSocket();
   const [showStartMessage, setShowStartMessage] = useState(false);
   const [showCreateGroupForm, setShowCreateGroupForm] = useState(false);
-  const { groups, recipients, addRecipient, addGroup } = useData();
+  const { groups, recipients, addRecipient, loading } = useData();
 
   let flag = true;
   useEffect(() => {
@@ -56,16 +57,22 @@ export const LeftSection = ({ setRightSide }) => {
           <CreateGroupForm setShowCreateGroupForm={setShowCreateGroupForm} />
         )}
         <SavedMessagesTile callback={() => setRightSide("saved")} />
-        {recipients?.map((recipient) => {
-          return (
-            <ChatCardWrapper
-              callback={() => setRightSide(recipient)}
-              key={recipient._id}
-            >
-              {recipient.name}
-            </ChatCardWrapper>
-          );
-        })}
+        {loading ? (
+          <div className="flex justify-center mt-2">
+            <Spinner />
+          </div>
+        ) : (
+          recipients?.map((recipient) => {
+            return (
+              <ChatCardWrapper
+                callback={() => setRightSide(recipient)}
+                key={recipient._id}
+              >
+                {recipient.name}
+              </ChatCardWrapper>
+            );
+          })
+        )}
         {groups?.map((group) => {
           return (
             <ChatCardWrapper
