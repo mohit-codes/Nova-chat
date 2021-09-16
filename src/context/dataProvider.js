@@ -40,6 +40,17 @@ export const DataProvider = ({ children }) => {
     setGroups((prevData) => [...prevData, item]);
   };
 
+  const updateGroup = (id, name, description, isPublic) => {
+    function callback(obj) {
+      if (obj._id === id) {
+        obj.name = name;
+        obj.description = description;
+        obj.isPublic = isPublic;
+      }
+      return obj;
+    }
+    setGroups((prevState) => prevState.map(callback));
+  };
   const removeGroup = (id) => {
     setGroups((prevData) => prevData.filter((obj) => obj._id !== id));
   };
@@ -49,6 +60,7 @@ export const DataProvider = ({ children }) => {
         loading,
         recipients,
         addRecipient,
+        updateGroup,
         groups,
         addGroup,
         removeGroup,
