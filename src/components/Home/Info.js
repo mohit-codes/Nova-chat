@@ -44,7 +44,13 @@ export const Info = ({ recipient, setRightSide, setShowRecipientDetails }) => {
             isGroup ? "Created" : "Joined"
           } on ${date} at ${time}`}</span>
         </div>
-        {isGroup && <UpdateGroupInfoForm group={recipient} isAdmin={isAdmin} />}
+        {isGroup && (
+          <UpdateGroupInfoForm
+            group={recipient}
+            isAdmin={isAdmin}
+            setShowRecipientDetails={setShowRecipientDetails}
+          />
+        )}
         {isGroup && <GroupMembers group={recipient} isAdmin={isAdmin} />}
         {isAdmin && (
           <div className="border-2 border-gray-200 mt-auto px-3 py-2">
