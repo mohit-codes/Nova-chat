@@ -7,13 +7,19 @@ export function scrollBottom(id) {
     document.getElementById(id).scrollHeight;
 }
 
-export async function fetchChats(userId, recipientId) {
+export async function fetchChats(userId, recipientId, endPoint) {
+  const data = {
+    userId: userId,
+  };
+  Object.assign(
+    data,
+    endPoint === "get_messages"
+      ? { receiverId: recipientId }
+      : { groupId: recipientId }
+  );
   const {
     data: { messages: chats },
-  } = await axios.post(`${BASE_URL}/messages/get_messages`, {
-    userId: userId,
-    receiverId: recipientId,
-  });
+  } = await axios.post(`${BASE_URL}/messages/${endPoint}`, data);
   return chats;
 }
 
