@@ -121,6 +121,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
                     </p>
                   )}
                   <div
+                    onClick={(e) => e.stopPropagation()}
                     onMouseEnter={() => setShowMessageChevron(msg.messageId)}
                     onMouseLeave={() => setShowMessageChevron("")}
                     className={`mb-3 w-min whitespace-nowrap py-2  px-3 rounded-3xl relative shadow-xl  ${
