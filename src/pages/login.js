@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Input } from "../components/input";
 import { useAuth } from "../context/authProvider";
 import { Link, useNavigate } from "@reach/router";
-
+import useDocumentTitle from "../hooks/useDocumentTitle";
 export const Login = () => {
   const navigate = useNavigate();
   const { loginWithUserCredentials, emailValidate } = useAuth();
@@ -11,6 +11,9 @@ export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useDocumentTitle("Log In | Nova Chat");
+
   const loginHandler = async (event) => {
     event.preventDefault();
     setLoading(true);
