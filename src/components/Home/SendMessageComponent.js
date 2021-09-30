@@ -1,36 +1,22 @@
-import axios from "axios";
 import { useState } from "react";
 import { useAuth } from "../../context/authProvider";
 import { useSocket } from "../../context/socket";
-import { BASE_URL } from "../../utils/utils";
 
 const emojis = require("emojis-list").slice(301);
 
-export const SendMessageComponent = ({
-  messages,
-  setMessages,
-  recipient,
-  isGroup,
-}) => {
-  const { user, setUser } = useAuth();
+export const SendMessageComponent = ({ recipient, isGroup }) => {
+  const { user } = useAuth();
   const [showEmojis, setShowEmojis] = useState(false);
   const [message, setMessage] = useState("");
   const socket = useSocket();
 
   const saveMsgHandler = async (e) => {
     e.preventDefault();
-    const msgObj = {
-      id: messages.length + 1,
-      message: message,
-    };
-    setMessages((prevState) => [...prevState, msgObj]);
-    setUser({ ...user, savedMessages: [...messages, msgObj] });
     setMessage("");
-    const res = await axios.post(`${BASE_URL}/users/saveMessage`, {
-      userId: user._id,
-      message: msgObj,
+    socket.emit("saveMessage", {
+      user: user,
+      message: message,
     });
-    console.log(res);
   };
 
   const sendHandler = async (e) => {
