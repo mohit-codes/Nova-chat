@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import {
   ChatCardWrapper,
@@ -7,14 +6,12 @@ import {
   SavedMessagesTile,
   StartConversation,
 } from "../index";
-import { useAuth } from "../../context/authProvider";
 import { useSocket } from "../../context/socket";
 import { useData } from "../../context/dataProvider";
 import { CreateGroupForm } from "./CreateGroupForm";
 import { Spinner } from "../Spinner";
 
 export const LeftSection = ({ setRightSide }) => {
-  const { user } = useAuth();
   const socket = useSocket();
   const [showStartMessage, setShowStartMessage] = useState(false);
   const [showCreateGroupForm, setShowCreateGroupForm] = useState(false);
@@ -22,9 +19,6 @@ export const LeftSection = ({ setRightSide }) => {
 
   let flag = true;
   useEffect(() => {
-    // socket.on("onlineUsers", (res) => {
-    //   console.log(res);
-    // });
     socket.on("newRecipient", (info) => {
       flag = !flag;
       if (recipients.findIndex((r) => r._id === info.sender._id) === -1) {
@@ -79,7 +73,7 @@ export const LeftSection = ({ setRightSide }) => {
               callback={() => setRightSide(group)}
               key={group._id}
             >
-              {group.name}
+              {group?.name}
             </ChatCardWrapper>
           );
         })}
