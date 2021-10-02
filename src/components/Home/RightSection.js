@@ -3,7 +3,14 @@ import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/authProvider";
 import { useSocket } from "../../context/socket";
-import { fetchChats, scrollBottom } from "../../utils/utils";
+import {
+  fetchChats,
+  scrollBottom,
+  axiosDelete,
+  fetchSavedMessages,
+  deleteSavedMessage,
+  decryptMessage,
+} from "../../utils/utils";
 import { Spinner } from "../Spinner";
 import { ChatMenu } from "./ChatMenu";
 import { Info } from "./Info";
@@ -17,10 +24,13 @@ export const RightSection = ({ setRightSide, recipient }) => {
   const [showMessageChevron, setShowMessageChevron] = useState("");
   const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [isOnline, setIsOnline] = useState(false);
   const [showRecipientDetails, setShowRecipientDetails] = useState(false);
   const isGroup = recipient?.groupCode ? true : false;
-  const isAdmin = recipient?.admin === user._id;
+  const isAdmin = isGroup
+    ? recipient?.admin === user._id
+      ? true
+      : false
+    : true;
   const socket = useSocket();
   let date;
 
@@ -30,7 +40,10 @@ export const RightSection = ({ setRightSide, recipient }) => {
       scrollBottom("messages");
     });
     socket.on("groupMessage", (info) => {
-      console.log(info);
+      setMessages((prevState) => [...prevState, info]);
+      scrollBottom("messages");
+    });
+    socket.on("savedMessage", (info) => {
       setMessages((prevState) => [...prevState, info]);
       scrollBottom("messages");
     });
@@ -60,13 +73,18 @@ export const RightSection = ({ setRightSide, recipient }) => {
       setLoading(false);
       scrollBottom("messages");
     } else {
-      setMessages(user.savedMessages);
+      const savedMessages = await fetchSavedMessages(user._id);
+      setMessages(savedMessages);
     }
   }, [recipient]);
 
-  const handler = (e) => {
-    e.stopPropagation();
-    setShowMessageOptions(false);
+  const messageDeleteHandler = async (id) => {
+    setMessages((prevState) => prevState.filter((msg) => msg.messageId !== id));
+    if (recipient !== "saved") {
+      await axiosDelete("messages", id);
+    } else {
+      await deleteSavedMessage(user, id);
+    }
   };
 
   return (
@@ -93,7 +111,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
         <div
           id="messages"
           className="overflow-y-auto px-5 pt-3 h-full shadow-inner"
-          onClick={(e) => handler(e)}
+          onClick={() => setShowMessageOptions(false)}
         >
           {loading ? (
             <div className="flex justify-center">
@@ -135,9 +153,14 @@ export const RightSection = ({ setRightSide, recipient }) => {
                         {msg?.sender.name !== user.name && msg?.sender?.name}
                       </p>
                     )}
-                    {showMessageOptions === msg.messageId && (
+                    {showMessageOptions === msg.messageId && isAdmin && (
                       <div className="absolute bg-gray-700 text-gray-300 right-0 -top-8 rounded-full">
-                        <button className="px-2 py-1">Delete</button>
+                        <button
+                          className="px-2 py-1"
+                          onClick={() => messageDeleteHandler(msg.messageId)}
+                        >
+                          Delete
+                        </button>
                       </div>
                     )}
                     <div className="flex justify-between items-end">
@@ -147,7 +170,11 @@ export const RightSection = ({ setRightSide, recipient }) => {
                           onClick={() => setShowMessageOptions(msg.messageId)}
                         ></i>
                       )}
-                      <span className="mr-2">{msg.message}</span>
+                      {
+                        <span className="mr-2">
+                          {decryptMessage(msg.key, msg.message, msg.iv)}
+                        </span>
+                      }
                       <span className="text-exs ">{time}</span>
                     </div>
                   </div>
