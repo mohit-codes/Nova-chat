@@ -12,13 +12,16 @@ export const GroupMembers = ({ group, isAdmin }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  useEffect(async () => {
-    setLoading(true);
-    const { data} = await axios.get(
-      `${BASE_URL}/groups/members/${group._id}`
-    );
-    setLoading(false);
-    setMembers(data.members);
+  useEffect(() => {
+    const fetch = async () => {
+      setLoading(true);
+      const { data } = await axios.get(
+        `${BASE_URL}/groups/members/${group._id}`
+      );
+      setLoading(false);
+      setMembers(data.members);
+    };
+    fetch();
   }, []);
 
   const addMemberEventHandler = async (e) => {
