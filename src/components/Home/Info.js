@@ -2,12 +2,31 @@ import dayjs from "dayjs";
 import { UpdateGroupInfoForm } from "./UpdateGroupInfoForm";
 import { useAuth } from "../../context/authProvider";
 import { GroupMembers } from "./GroupMembers";
-
-export const Info = ({ recipient, setShowRecipientDetails }) => {
+import { useEffect } from "react";
+import { axiosDelete } from "../../utils/utils";
+import { useData } from "../../context/dataProvider";
+export const Info = ({ recipient, setRightSide, setShowRecipientDetails }) => {
   const { user } = useAuth();
   const isAdmin = recipient?.admin === user._id;
   const time = dayjs(recipient.createdAt).format("h.mm a");
   const date = dayjs(recipient.createdAt).format("DD/MM/YYYY");
+  const isGroup = recipient?.groupCode ? true : false;
+  const leftSection = document.getElementById("leftSection");
+  const { removeGroup } = useData();
+  const closeInfo = () => setShowRecipientDetails(false);
+  useEffect(() => {
+    leftSection.addEventListener("click", closeInfo);
+    // cleanup
+    return () => {
+      leftSection.removeEventListener("click", closeInfo);
+    };
+  }, []);
+
+  const deleteGroup = async () => {
+    await axiosDelete("groups", recipient._id);
+    removeGroup(recipient._id);
+    setRightSide(null);
+  };
 
   return (
     <div className="w-1/2">
@@ -18,16 +37,27 @@ export const Info = ({ recipient, setShowRecipientDetails }) => {
           onClick={() => setShowRecipientDetails(false)}
         ></i>
       </div>
-      <div className="overflow-y-auto h-550">
-        <div className="border-2 border-gray-200 mt-4 px-3 py-2 text-sm">
-          <i className="far fa-calendar-alt"></i>
-          <span>{` Created on ${date} at ${time}`}</span>
+      <div className="flex flex-col overflow-y-auto h-550">
+        <div className="border-2 border-gray-200 mt-4 px-3 py-2 text-sm bg-white">
+          <i className="far fa-calendar-alt mr-2"></i>
+          <span>{`${
+            isGroup ? "Created" : "Joined"
+          } on ${date} at ${time}`}</span>
         </div>
-        <UpdateGroupInfoForm group={recipient} isAdmin={isAdmin} />
-        <GroupMembers group={recipient} isAdmin={isAdmin} />
+        {isGroup && (
+          <UpdateGroupInfoForm
+            group={recipient}
+            isAdmin={isAdmin}
+            setShowRecipientDetails={setShowRecipientDetails}
+          />
+        )}
+        {isGroup && <GroupMembers group={recipient} isAdmin={isAdmin} />}
         {isAdmin && (
-          <div className="border-2 border-gray-200 mt-4 px-3 py-2">
-            <div className="flex justify-between items-center text-red-600">
+          <div className="border-2 border-gray-200 mt-auto px-3 py-2">
+            <div
+              className="flex justify-between items-center text-red-600 cursor-pointer"
+              onClick={() => deleteGroup()}
+            >
               <span>Delete Group</span>
               <i className="fa fa-trash"></i>
             </div>

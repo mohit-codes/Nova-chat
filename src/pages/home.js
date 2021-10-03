@@ -3,10 +3,14 @@ import { LeftSection, RightSection } from "../components/index";
 import { useAuth } from "../context/authProvider";
 import { useSocket } from "../context/socket";
 import { DataProvider } from "../context/dataProvider";
+import useDocumentTitle from "../hooks/useDocumentTitle";
+
 export const Home = () => {
   const [rightSide, setRightSide] = useState(null);
   const { user } = useAuth();
   const socket = useSocket();
+  useDocumentTitle("Nova Chat");
+
   useEffect(() => {
     socket.emit("connectUser", { name: user.name });
   }, []);
@@ -18,7 +22,9 @@ export const Home = () => {
           <div className="w-full h-full">
             {rightSide == null ? (
               <div className="flex bg-cyanShade h-full justify-center rounded-r-md items-center">
-                <p className="text-2xl text-white font-bold">Nova Chat</p>
+                <p className="text-2xl text-white font-bold animate-bounce">
+                  Nova Chat
+                </p>
               </div>
             ) : (
               <RightSection setRightSide={setRightSide} recipient={rightSide} />
