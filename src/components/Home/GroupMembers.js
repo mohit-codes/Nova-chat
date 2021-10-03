@@ -14,7 +14,7 @@ export const GroupMembers = ({ group, isAdmin }) => {
   const [loading, setLoading] = useState(false);
   useEffect(async () => {
     setLoading(true);
-    const { data: data } = await axios.get(
+    const { data} = await axios.get(
       `${BASE_URL}/groups/members/${group._id}`
     );
     setLoading(false);
@@ -24,7 +24,7 @@ export const GroupMembers = ({ group, isAdmin }) => {
   const addMemberEventHandler = async (e) => {
     e.preventDefault();
 
-    const { data: data } = await axios.post(`${BASE_URL}/groups/add_member`, {
+    const { data } = await axios.post(`${BASE_URL}/groups/add_member`, {
       memberEmail: email,
       groupId: group._id,
     });
