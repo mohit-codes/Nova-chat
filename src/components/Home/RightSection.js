@@ -55,27 +55,30 @@ export const RightSection = ({ setRightSide, recipient }) => {
     }
   }, []);
 
-  useEffect(async () => {
-    if (isGroup) {
-      setLoading(true);
-      const chats = await fetchChats(
-        user._id,
-        recipient._id,
-        "get_group_messages"
-      );
-      setMessages(chats);
-      setLoading(false);
-      scrollBottom("messages");
-    } else if (recipient !== "saved") {
-      setLoading(true);
-      const chats = await fetchChats(user._id, recipient._id, "get_messages");
-      setMessages(chats);
-      setLoading(false);
-      scrollBottom("messages");
-    } else {
-      const savedMessages = await fetchSavedMessages(user._id);
-      setMessages(savedMessages);
-    }
+  useEffect(() => {
+    const fetch = async () => {
+      if (isGroup) {
+        setLoading(true);
+        const chats = await fetchChats(
+          user._id,
+          recipient._id,
+          "get_group_messages"
+        );
+        setMessages(chats);
+        setLoading(false);
+        scrollBottom("messages");
+      } else if (recipient !== "saved") {
+        setLoading(true);
+        const chats = await fetchChats(user._id, recipient._id, "get_messages");
+        setMessages(chats);
+        setLoading(false);
+        scrollBottom("messages");
+      } else {
+        const savedMessages = await fetchSavedMessages(user._id);
+        setMessages(savedMessages);
+      }
+    };
+    fetch();
   }, [recipient]);
 
   const messageDeleteHandler = async (id) => {
