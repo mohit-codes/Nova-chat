@@ -9,7 +9,7 @@ export const GroupMembers = ({ group, isAdmin }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   useEffect(async () => {
-    const { data: data } = await axios.get(
+    const { data } = await axios.get(
       `${BASE_URL}/groups/members/${group._id}`
     );
     setMembers(data.members);
@@ -18,7 +18,7 @@ export const GroupMembers = ({ group, isAdmin }) => {
   const addMemberEventHandler = async (e) => {
     e.preventDefault();
 
-    const { data: data } = await axios.post(`${BASE_URL}/groups/add_member`, {
+    const { data } = await axios.post(`${BASE_URL}/groups/add_member`, {
       memberEmail: email,
       groupId: group._id,
     });
