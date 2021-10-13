@@ -4,9 +4,11 @@ import { useAuth } from "../context/authProvider";
 import { useSocket } from "../context/socket";
 import { DataProvider } from "../context/dataProvider";
 import useDocumentTitle from "../hooks/useDocumentTitle";
+import { Settings } from "../components/Home/Settings";
 
 export const Home = () => {
   const [rightSide, setRightSide] = useState(null);
+  const [leftSide, setLeftSide] = useState(false);
   const { user } = useAuth();
   const socket = useSocket();
   useDocumentTitle("Nova Chat");
@@ -18,7 +20,14 @@ export const Home = () => {
     <DataProvider>
       <div className="min-h-screen bg-background px-36 pt-14">
         <div className="mr-auto ml-auto flex h-600 w-full bg-back rounded-md">
-          <LeftSection setRightSide={setRightSide} />
+          {leftSide ? (
+            <Settings setLeftSide={setLeftSide} />
+          ) : (
+            <LeftSection
+              setLeftSide={setLeftSide}
+              setRightSide={setRightSide}
+            />
+          )}
           <div className="w-full h-full">
             {rightSide == null ? (
               <div className="flex bg-cyanShade h-full justify-center rounded-r-md items-center">
