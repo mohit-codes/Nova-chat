@@ -153,7 +153,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
                   >
                     {isGroup && (
                       <p className="font-medium">
-                        {msg?.sender.name !== user.name && msg?.sender?.name}
+                        {msg?.sender?.name !== user.name && msg?.sender?.name}
                       </p>
                     )}
                     {showMessageOptions === msg.messageId && isAdmin && (
