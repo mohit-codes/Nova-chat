@@ -11,7 +11,7 @@ import { useData } from "../../context/dataProvider";
 import { CreateGroupForm } from "./CreateGroupForm";
 import { Spinner } from "../Spinner";
 
-export const LeftSection = ({ setRightSide }) => {
+export const LeftSection = ({ setRightSide, setLeftSide }) => {
   const socket = useSocket();
   const [showStartMessage, setShowStartMessage] = useState(false);
   const [showCreateGroupForm, setShowCreateGroupForm] = useState(false);
@@ -28,15 +28,8 @@ export const LeftSection = ({ setRightSide }) => {
   }, [flag]);
   return (
     <div className="flex-col flex w-1/3" id="leftSection">
-      <LeftUpperHeader />
+      <LeftUpperHeader setLeftSide={setLeftSide} />
       <div className="overflow-y-auto h-full">
-        <div className="px-3 py-2">
-          <input
-            type="text"
-            className="rounded-full w-full my-2 px-3 py-1 shadow-md"
-            placeholder="search"
-          />
-        </div>
         <CreateMenu
           setShowStartMessage={setShowStartMessage}
           setShowCreateGroupForm={setShowCreateGroupForm}
