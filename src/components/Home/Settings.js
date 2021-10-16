@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import axios from "axios";
 import { useState } from "react";
 import { useAuth } from "../../context/authProvider";
@@ -16,7 +17,11 @@ export const Settings = ({ setLeftSide }) => {
     setUser((prevState) => {
       return { ...prevState, name: name };
     });
-    await axios.put(`${BASE_URL}/users/update/${user._id}`, { name: name });
+    localStorage.setItem("user", JSON.stringify({ ...user, name: name }));
+    setShowEditName(false);
+    await axios.put(`${BASE_URL}/users/update/${user._id}`, {
+      name: name,
+    });
   };
 
   return (
