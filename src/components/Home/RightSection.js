@@ -74,8 +74,10 @@ export const RightSection = ({ setRightSide, recipient }) => {
         setLoading(false);
         scrollBottom("messages");
       } else {
+        setLoading(true);
         const savedMessages = await fetchSavedMessages(user._id);
         setMessages(savedMessages);
+        setLoading(false);
       }
     };
     fetch();
