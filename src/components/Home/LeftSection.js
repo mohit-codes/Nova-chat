@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import {
   ChatCardWrapper,
@@ -7,23 +6,19 @@ import {
   SavedMessagesTile,
   StartConversation,
 } from "../index";
-import { useAuth } from "../../context/authProvider";
 import { useSocket } from "../../context/socket";
 import { useData } from "../../context/dataProvider";
 import { CreateGroupForm } from "./CreateGroupForm";
+import { Spinner } from "../Spinner";
 
-export const LeftSection = ({ setRightSide }) => {
-  const { user } = useAuth();
+export const LeftSection = ({ setRightSide, setLeftSide }) => {
   const socket = useSocket();
   const [showStartMessage, setShowStartMessage] = useState(false);
   const [showCreateGroupForm, setShowCreateGroupForm] = useState(false);
-  const { groups, recipients, addRecipient } = useData();
+  const { groups, recipients, addRecipient, loading } = useData();
 
   let flag = true;
   useEffect(() => {
-    // socket.on("onlineUsers", (res) => {
-    //   console.log(res);
-    // });
     socket.on("newRecipient", (info) => {
       flag = !flag;
       if (recipients.findIndex((r) => r._id === info.sender._id) === -1) {
@@ -31,18 +26,10 @@ export const LeftSection = ({ setRightSide }) => {
       }
     });
   }, [flag]);
-  console.log(user, JSON.parse(localStorage?.getItem("user")));
   return (
-    <div className="flex-col flex w-1/3">
-      <LeftUpperHeader />
+    <div className="flex-col flex w-1/2 lg:w-1/3" id="leftSection">
+      <LeftUpperHeader setLeftSide={setLeftSide} />
       <div className="overflow-y-auto h-full">
-        <div className="px-3 py-2">
-          <input
-            type="text"
-            className="rounded-full w-full my-2 px-3 py-1 shadow-md"
-            placeholder="search"
-          />
-        </div>
         <CreateMenu
           setShowStartMessage={setShowStartMessage}
           setShowCreateGroupForm={setShowCreateGroupForm}
@@ -57,23 +44,29 @@ export const LeftSection = ({ setRightSide }) => {
           <CreateGroupForm setShowCreateGroupForm={setShowCreateGroupForm} />
         )}
         <SavedMessagesTile callback={() => setRightSide("saved")} />
-        {recipients?.map((recipient) => {
-          return (
-            <ChatCardWrapper
-              callback={() => setRightSide(recipient)}
-              key={recipient._id}
-            >
-              {recipient.name}
-            </ChatCardWrapper>
-          );
-        })}
+        {loading ? (
+          <div className="flex justify-center mt-2">
+            <Spinner />
+          </div>
+        ) : (
+          recipients?.map((recipient) => {
+            return (
+              <ChatCardWrapper
+                callback={() => setRightSide(recipient)}
+                key={recipient._id}
+              >
+                {recipient.name}
+              </ChatCardWrapper>
+            );
+          })
+        )}
         {groups?.map((group) => {
           return (
             <ChatCardWrapper
               callback={() => setRightSide(group)}
               key={group._id}
             >
-              {group.name}
+              {group?.name}
             </ChatCardWrapper>
           );
         })}

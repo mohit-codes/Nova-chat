@@ -1,24 +1,33 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Spinner } from "..";
+import { useAuth } from "../../context/authProvider";
 import { BASE_URL } from "../../utils/utils";
 
 export const GroupMembers = ({ group, isAdmin }) => {
+  const { user } = useAuth();
   const [members, setMembers] = useState([]);
   const [showAddMemberForm, setShowAddMemberForm] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  useEffect(async () => {
-    const { data: data } = await axios.get(
-      `${BASE_URL}/groups/members/${group._id}`
-    );
-    setMembers(data.members);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const fetch = async () => {
+      setLoading(true);
+      const { data } = await axios.get(
+        `${BASE_URL}/groups/members/${group._id}`
+      );
+      setLoading(false);
+      setMembers(data.members);
+    };
+    fetch();
   }, []);
 
   const addMemberEventHandler = async (e) => {
     e.preventDefault();
 
-    const { data: data } = await axios.post(`${BASE_URL}/groups/add_member`, {
+    const { data } = await axios.post(`${BASE_URL}/groups/add_member`, {
       memberEmail: email,
       groupId: group._id,
     });
@@ -64,7 +73,7 @@ export const GroupMembers = ({ group, isAdmin }) => {
         </div>
       )}
       <div className="">
-        <div className="border-2 border-gray-200 mt-4 px-3 py-2">
+        <div className="border-2 border-gray-200 bg-white mt-4 px-3 py-2">
           <div className="flex justify-between items-center">
             <span>Members</span>
             {isAdmin && (
@@ -75,13 +84,28 @@ export const GroupMembers = ({ group, isAdmin }) => {
             )}
           </div>
         </div>
-        {members.map((member) => {
-          return (
-            <div className="px-3" key={member._id}>
-              {member.name}
-            </div>
-          );
-        })}
+        {loading ? (
+          <div className="flex justify-center mt-2">
+            {" "}
+            <Spinner />{" "}
+          </div>
+        ) : (
+          members.map((member) => {
+            return (
+              <div className="px-3 py-2 border-2 border-gray" key={member._id}>
+                <p>
+                  {member.name}{" "}
+                  {user._id === member._id && (
+                    <span className="border-2 border-black rounded-xl px-1 float-right">
+                      admin
+                    </span>
+                  )}
+                </p>
+                <p className="text-sm">{member.email}</p>
+              </div>
+            );
+          })
+        )}
       </div>
     </>
   );

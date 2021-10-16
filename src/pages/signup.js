@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Input } from "../components/input";
 import { useAuth } from "../context/authProvider";
 import { Link, useNavigate } from "@reach/router";
-
+import useDocumentTitle from "../hooks/useDocumentTitle";
 export const Signup = () => {
   const navigate = useNavigate();
   const { signupWithUserCredentials, emailValidate } = useAuth();
@@ -13,6 +13,8 @@ export const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useDocumentTitle("Sign up | Nova Chat");
 
   const matchPassword = confirmPassword === password && confirmPassword !== "";
 

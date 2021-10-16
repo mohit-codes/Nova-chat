@@ -10,22 +10,25 @@ export const DataProvider = ({ children }) => {
   const [recipients, setRecipients] = useState([]);
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(false);
-  useEffect(async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(`${BASE_URL}/users/recipients/${user._id}`);
-      setRecipients(res.data.recipients);
-      setLoading(false);
-      setLoading(true);
-      const secondResponse = await axios.get(
-        `${BASE_URL}/users/groups/${user._id}`
-      );
-      setGroups(secondResponse.data.groups);
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(`${BASE_URL}/users/recipients/${user._id}`);
+        setRecipients(res.data.recipients);
+        setLoading(false);
+        setLoading(true);
+        const secondResponse = await axios.get(
+          `${BASE_URL}/users/groups/${user._id}`
+        );
+        setGroups(secondResponse.data.groups);
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+      }
+    };
+    fetch();
   }, []);
 
   const addRecipient = (item) => {
@@ -40,6 +43,17 @@ export const DataProvider = ({ children }) => {
     setGroups((prevData) => [...prevData, item]);
   };
 
+  const updateGroup = (id, name, description, isPublic) => {
+    function callback(obj) {
+      if (obj._id === id) {
+        obj.name = name;
+        obj.description = description;
+        obj.isPublic = isPublic;
+      }
+      return obj;
+    }
+    setGroups((prevState) => prevState.map(callback));
+  };
   const removeGroup = (id) => {
     setGroups((prevData) => prevData.filter((obj) => obj._id !== id));
   };
@@ -49,6 +63,7 @@ export const DataProvider = ({ children }) => {
         loading,
         recipients,
         addRecipient,
+        updateGroup,
         groups,
         addGroup,
         removeGroup,

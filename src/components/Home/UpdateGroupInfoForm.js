@@ -1,30 +1,37 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
 import { useState } from "react";
+import { useData } from "../../context/dataProvider";
 import { BASE_URL } from "../../utils/utils";
 
-export const UpdateGroupInfoForm = ({ group, isAdmin }) => {
+export const UpdateGroupInfoForm = ({
+  group,
+  isAdmin,
+  setShowRecipientDetails,
+}) => {
   const [showEditName, setShowEditName] = useState(false);
   const [showEditDescription, setShowEditDescription] = useState(false);
   const [name, setName] = useState(group.name);
   const [description, setDescription] = useState(group.description);
-
+  const { updateGroup } = useData();
   const updateHandler = async (event) => {
     event.preventDefault();
     setShowEditDescription(false);
     setShowEditName(false);
+    updateGroup(group._id, name, description, false);
     const {
       data: { status },
     } = await axios.put(`${BASE_URL}/groups/update_group`, {
       groupId: group._id,
       name: name,
       description: description,
-      isPublic: true,
+      isPublic: false,
     });
+    setShowRecipientDetails(false);
   };
   return (
     <form onSubmit={(e) => updateHandler(e)}>
-      <div className="border-2 border-gray-200 mt-4 px-3 py-2">
+      <div className="border-2 border-gray-200 bg-white mt-4 px-3 py-2">
         <div>
           <span className="font-medium"> Name </span>{" "}
           {isAdmin && (
@@ -47,8 +54,8 @@ export const UpdateGroupInfoForm = ({ group, isAdmin }) => {
               disabled={name === "" || name === group.name}
               className={`rounded-full px-3 py-1 shadow-md ${
                 name === "" || name === group.name
-                  ? "cursor-pointer"
-                  : "cursor-not-allowed"
+                  ? "cursor-not-allowed"
+                  : "cursor-pointer"
               }`}
             >
               Save
@@ -66,7 +73,7 @@ export const UpdateGroupInfoForm = ({ group, isAdmin }) => {
           <p>{name} </p>
         )}
       </div>
-      <div className="mt-4 px-3 py-2 border-2 border-gray-200">
+      <div className="mt-4 px-3 py-2 border-2 border-gray-200 bg-white">
         <div>
           <span className="font-medium"> Description </span>{" "}
           {isAdmin && (
@@ -89,8 +96,8 @@ export const UpdateGroupInfoForm = ({ group, isAdmin }) => {
               disabled={description === "" || description === group.description}
               className={`rounded-full px-3 py-1 shadow-md ${
                 description === "" || description === group.description
-                  ? "cursor-pointer"
-                  : "cursor-not-allowed"
+                  ? "cursor-not-allowed"
+                  : "cursor-pointer"
               }`}
             >
               Save

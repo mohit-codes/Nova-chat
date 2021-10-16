@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(
     JSON.parse(localStorage?.getItem("token"))
   );
-
   if (token) {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   }
@@ -69,7 +68,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     axios.defaults.headers.common["Authorization"] = null;
-    localStorage.clear();
+    localStorage?.removeItem("user");
+    localStorage?.removeItem("token");
     navigate("/", { replace: true });
   };
   return (
