@@ -27,7 +27,7 @@ export const LeftSection = ({ setRightSide, setLeftSide }) => {
     });
   }, [flag]);
   return (
-    <div className="flex-col flex w-1/3" id="leftSection">
+    <div className="flex-col flex w-1/2 lg:w-1/3" id="leftSection">
       <LeftUpperHeader setLeftSide={setLeftSide} />
       <div className="overflow-y-auto h-full">
         <CreateMenu
