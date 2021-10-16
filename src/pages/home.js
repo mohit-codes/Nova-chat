@@ -18,8 +18,8 @@ export const Home = () => {
   }, []);
   return (
     <DataProvider>
-      <div className="min-h-screen bg-background px-36 pt-14">
-        <div className="mr-auto ml-auto flex h-600 w-full bg-back rounded-md">
+      <div className="min-h-screen bg-background lg:px-36 lg:pt-14">
+        <div className="mr-auto ml-auto flex h-screen lg:h-600 w-full bg-back rounded-md">
           {leftSide ? (
             <Settings setLeftSide={setLeftSide} />
           ) : (
