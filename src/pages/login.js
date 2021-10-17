@@ -86,6 +86,15 @@ export const Login = () => {
             >
               {loading ? "Logging In..." : "Login"}
             </button>
+            <button
+              onClick={() => {
+                setEmail("test@test.com");
+                setPassword("Test@123");
+              }}
+              className="mt-2 w-72 py-2 rounded-md text-white cursor-pointer bg-blue-800"
+            >
+              {"Use test credentials"}
+            </button>
           </form>
           <p className="my-3">OR</p>
           <Link to="signup">
