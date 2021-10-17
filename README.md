@@ -20,3 +20,5 @@ Nova Chat is a real time messaging web application.
 - Delete messages.
 - Privilege for group admin such as edit update group name and description, remove members, add members, delete messages, delete group;
 - Responsive design breakpoints - desktop, tablet.
+
+ ### Made with ❤️ by [Mohit](https://twitter.com/Mohit_codes) for educational purpose.
