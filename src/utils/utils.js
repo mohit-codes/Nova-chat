@@ -1,6 +1,6 @@
 import axios from "axios";
 import crypto from "crypto-js";
-export const BASE_URL = "http://localhost:8080";
+export const BASE_URL = "https://nova-chat-backend.herokuapp.com";
 
 export function scrollBottom(id) {
   document.getElementById(id).scrollTop =
