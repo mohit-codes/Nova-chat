@@ -46,7 +46,6 @@ export async function axiosDelete(endpoint, id) {
 }
 
 export const decryptMessage = (key, message, iv) => {
-  console.log(key, message, iv);
   let _key = crypto.enc.Hex.parse(key);
   const result = crypto.AES.decrypt(message, _key, {
     iv: crypto.enc.Hex.parse(iv),
