@@ -1,6 +1,6 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/9fdd5c29-ba1d-43ae-b45c-eb70e1d96b32/deploy-status)](https://app.netlify.com/sites/nova-chat/deploys)
 
-# Nova Chat :message:
+# Nova Chat
 
 Nova Chat is a real time messaging web application.
 
