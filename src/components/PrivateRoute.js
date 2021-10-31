@@ -1,15 +1,13 @@
-import { useNavigate } from "@reach/router";
-import { useEffect } from "react";
+import { Redirect } from "@reach/router";
 import { useAuth } from "../context/authProvider";
-import { Home } from "../pages";
 
-export function PrivateRoute() {
+export function PrivateRoute({ component: Component, path }) {
   const { user } = useAuth();
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (user == null) {
-      navigate("/", { replace: true });
-    }
-  }, []);
-  return <Home />;
+  return user == null ? (
+    //add noThrow and Redirect will do redirect without using componentDidCatch.
+    //Redirect works with componentDidCatch to prevent the tree from rendering and starts over with a new location.
+    <Redirect from="" to="/" noThrow />
+  ) : (
+    <Component path={path} />
+  );
 }
