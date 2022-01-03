@@ -7,13 +7,6 @@ export function scrollBottom(id) {
     document.getElementById(id).scrollHeight;
 }
 
-export async function fetchSavedMessages(id) {
-  const {
-    data: { savedMessages: savedMessages },
-  } = await axios.get(`${BASE_URL}/users/savedMessages/${id}`);
-  return savedMessages;
-}
-
 export async function fetchChats(userId, recipientId, endPoint) {
   const data = {
     userId: userId,
