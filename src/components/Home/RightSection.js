@@ -1,14 +1,8 @@
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/authProvider";
+import { useData } from "../../context/dataProvider";
 import { useSocket } from "../../context/socket";
-import {
-  fetchChats,
-  scrollBottom,
-  axiosDelete,
-  fetchSavedMessages,
-  deleteSavedMessage,
-} from "../../utils/utils";
 import { Spinner } from "../Spinner";
 import { ChatMenu } from "./ChatMenu";
 import { Info } from "./Info";
@@ -17,9 +11,15 @@ import { SendMessageComponent } from "./SendMessageComponent";
 
 export const RightSection = ({ setRightSide, recipient }) => {
   const { user } = useAuth();
+  const {
+    messagesLoading,
+    messages,
+    fetchMessages,
+    addMessageCallback,
+    fetchSavedMessages,
+    messageDeleteHandler,
+  } = useData();
   const headerTitle = recipient === "saved" ? "Saved Messages" : recipient.name;
-  const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showRecipientDetails, setShowRecipientDetails] = useState(false);
   const isGroup = recipient?.groupCode ? true : false;
@@ -32,18 +32,10 @@ export const RightSection = ({ setRightSide, recipient }) => {
   let date;
 
   useEffect(() => {
-    socket.on("message", (info) => {
-      setMessages((prevState) => [...prevState, info]);
-      scrollBottom("messages");
-    });
-    socket.on("groupMessage", (info) => {
-      setMessages((prevState) => [...prevState, info]);
-      scrollBottom("messages");
-    });
-    socket.on("savedMessage", (info) => {
-      setMessages((prevState) => [...prevState, info]);
-      scrollBottom("messages");
-    });
+    socket.on("message", addMessageCallback);
+    socket.on("groupMessage", addMessageCallback);
+    socket.on("savedMessage", addMessageCallback);
+
     if (isGroup) {
       socket.emit("joinGroup", {
         userInfo: { name: user.name, _id: user._id, email: user.email },
@@ -55,39 +47,15 @@ export const RightSection = ({ setRightSide, recipient }) => {
   useEffect(() => {
     const fetch = async () => {
       if (isGroup) {
-        setLoading(true);
-        const chats = await fetchChats(
-          user._id,
-          recipient._id,
-          "get_group_messages"
-        );
-        setMessages(chats);
-        setLoading(false);
-        scrollBottom("messages");
+        await fetchMessages(user._id, recipient._id, "get_group_messages");
       } else if (recipient !== "saved") {
-        setLoading(true);
-        const chats = await fetchChats(user._id, recipient._id, "get_messages");
-        setMessages(chats);
-        setLoading(false);
-        scrollBottom("messages");
+        await fetchMessages(user._id, recipient._id, "get_messages");
       } else {
-        setLoading(true);
-        const savedMessages = await fetchSavedMessages(user._id);
-        setMessages(savedMessages);
-        setLoading(false);
+        await fetchSavedMessages(user._id);
       }
     };
     fetch();
   }, [recipient]);
-
-  const messageDeleteHandler = async (id) => {
-    setMessages((prevState) => prevState.filter((msg) => msg.messageId !== id));
-    if (recipient !== "saved") {
-      await axiosDelete("messages", id);
-    } else {
-      await deleteSavedMessage(user, id);
-    }
-  };
 
   return (
     <div className="flex w-full h-full">
@@ -114,7 +82,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
           id="messages"
           className="overflow-y-auto px-5 pt-3 h-full shadow-inner"
         >
-          {loading ? (
+          {messagesLoading ? (
             <div className="flex justify-center">
               <Spinner />
             </div>
@@ -149,12 +117,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
             })
           )}
         </div>
-        <SendMessageComponent
-          setMessages={setMessages}
-          messages={messages}
-          recipient={recipient}
-          isGroup={isGroup}
-        />
+        <SendMessageComponent recipient={recipient} isGroup={isGroup} />
       </div>
       {showRecipientDetails && (
         <Info

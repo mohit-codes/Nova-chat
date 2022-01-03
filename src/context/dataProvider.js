@@ -1,6 +1,12 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
-import { BASE_URL } from "../utils/utils";
+import {
+  BASE_URL,
+  fetchChats,
+  scrollBottom,
+  axiosDelete,
+  deleteSavedMessage,
+} from "../utils/utils";
 import { useAuth } from "./authProvider";
 
 const DataContext = createContext();
@@ -10,6 +16,9 @@ export const DataProvider = ({ children }) => {
   const [recipients, setRecipients] = useState([]);
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [messagesLoading, setMessagesLoading] = useState(false);
+
   useEffect(() => {
     const fetch = async () => {
       try {
@@ -57,6 +66,36 @@ export const DataProvider = ({ children }) => {
   const removeGroup = (id) => {
     setGroups((prevData) => prevData.filter((obj) => obj._id !== id));
   };
+
+  const fetchMessages = async (userId, recipientId, endpoint) => {
+    setMessagesLoading(true);
+    const chats = await fetchChats(userId, recipientId, endpoint);
+    setMessages(chats);
+    setMessagesLoading(false);
+    scrollBottom("messages");
+  };
+
+  const addMessageCallback = (info) => {
+    setMessages((prevState) => [...prevState, info]);
+    scrollBottom("messages");
+  };
+
+  const fetchSavedMessages = async (id) => {
+    setMessagesLoading(true);
+    const { data } = await axios.get(`${BASE_URL}/users/savedMessages/${id}`);
+    setMessages(data.savedMessages);
+    setMessagesLoading(false);
+  };
+
+  const messageDeleteHandler = async (id, recipient) => {
+    setMessages((prevState) => prevState.filter((msg) => msg.messageId !== id));
+    if (recipient !== "saved") {
+      await axiosDelete("messages", id);
+    } else {
+      await deleteSavedMessage(user, id);
+    }
+  };
+
   return (
     <DataContext.Provider
       value={{
@@ -68,6 +107,12 @@ export const DataProvider = ({ children }) => {
         addGroup,
         removeGroup,
         removeRecipient,
+        fetchMessages,
+        messagesLoading,
+        messages,
+        addMessageCallback,
+        fetchSavedMessages,
+        messageDeleteHandler,
       }}
     >
       {children}
