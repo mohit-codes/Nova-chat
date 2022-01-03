@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import axios from "axios";
 import { useEffect } from "react";
 import { useAuth } from "../../context/authProvider";
@@ -24,7 +23,7 @@ export const ChatMenu = ({
   }, []);
 
   const deleteChatHandler = async () => {
-    const res = await axios.delete(`${BASE_URL}/users/deleteRecipient`, {
+    await axios.delete(`${BASE_URL}/users/deleteRecipient`, {
       data: {
         senderId: user._id,
         recipientId: recipient._id,
@@ -35,7 +34,7 @@ export const ChatMenu = ({
   };
 
   const leaveGroupHandler = async () => {
-    const res = await axios.post(`${BASE_URL}/groups/remove_member`, {
+    await axios.post(`${BASE_URL}/groups/remove_member`, {
       groupId: recipient._id,
       memberId: user._id,
     });
