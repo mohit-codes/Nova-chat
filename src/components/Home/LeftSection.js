@@ -10,24 +10,28 @@ import { useSocket } from "../../context/socket";
 import { useData } from "../../context/dataProvider";
 import { CreateGroupForm } from "./CreateGroupForm";
 import { Spinner } from "../Spinner";
+import { Link } from "@reach/router";
 
-export const LeftSection = ({ setRightSide, setLeftSide }) => {
+export const LeftSection = ({ setLeftSide }) => {
   const socket = useSocket();
   const [showStartMessage, setShowStartMessage] = useState(false);
   const [showCreateGroupForm, setShowCreateGroupForm] = useState(false);
   const { groups, recipients, addRecipient, loading } = useData();
 
-  let flag = true;
   useEffect(() => {
     socket.on("newRecipient", (info) => {
-      flag = !flag;
-      if (recipients.findIndex((r) => r._id === info.sender._id) === -1) {
-        addRecipient(info.sender);
-      }
+      addRecipient(info.sender);
     });
-  }, [flag]);
+
+    return () => {
+      socket.off("newRecipient", (info) => {
+        addRecipient(info.sender);
+      });
+    };
+  }, []);
+
   return (
-    <div className="flex-col flex w-1/2 lg:w-1/3" id="leftSection">
+    <div className="flex-col flex w-full md:w-2/3 lg:w-1/3" id="leftSection">
       <LeftUpperHeader setLeftSide={setLeftSide} />
       <div className="overflow-y-auto h-full">
         <CreateMenu
@@ -43,7 +47,7 @@ export const LeftSection = ({ setRightSide, setLeftSide }) => {
         {showCreateGroupForm && (
           <CreateGroupForm setShowCreateGroupForm={setShowCreateGroupForm} />
         )}
-        <SavedMessagesTile callback={() => setRightSide("saved")} />
+        <SavedMessagesTile />
         {loading ? (
           <div className="flex justify-center mt-2">
             <Spinner />
@@ -51,23 +55,17 @@ export const LeftSection = ({ setRightSide, setLeftSide }) => {
         ) : (
           recipients?.map((recipient) => {
             return (
-              <ChatCardWrapper
-                callback={() => setRightSide(recipient)}
-                key={recipient._id}
-              >
-                {recipient.name}
-              </ChatCardWrapper>
+              <Link to={recipient._id} key={recipient._id} state={recipient}>
+                <ChatCardWrapper>{recipient.name}</ChatCardWrapper>
+              </Link>
             );
           })
         )}
         {groups?.map((group) => {
           return (
-            <ChatCardWrapper
-              callback={() => setRightSide(group)}
-              key={group._id}
-            >
-              {group?.name}
-            </ChatCardWrapper>
+            <Link to={group._id} key={group._id} state={group}>
+              <ChatCardWrapper>{group?.name}</ChatCardWrapper>
+            </Link>
           );
         })}
       </div>
