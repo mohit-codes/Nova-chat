@@ -1,3 +1,4 @@
+import { navigate, useLocation } from "@reach/router";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/authProvider";
@@ -9,7 +10,7 @@ import { Info } from "./Info";
 import Message from "./Message";
 import { SendMessageComponent } from "./SendMessageComponent";
 
-export const RightSection = ({ setRightSide, recipient }) => {
+export const RightSection = () => {
   const { user } = useAuth();
   const {
     messagesLoading,
@@ -19,7 +20,10 @@ export const RightSection = ({ setRightSide, recipient }) => {
     fetchSavedMessages,
     messageDeleteHandler,
   } = useData();
-  const headerTitle = recipient === "saved" ? "Saved Messages" : recipient.name;
+  const { state: recipient } = useLocation();
+
+  const headerTitle =
+    recipient?.type === "saved" ? "Saved Messages" : recipient.name;
   const [showMenu, setShowMenu] = useState(false);
   const [showRecipientDetails, setShowRecipientDetails] = useState(false);
   const isGroup = recipient?.groupCode ? true : false;
@@ -48,7 +52,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
     const fetch = async () => {
       if (isGroup) {
         await fetchMessages(user._id, recipient._id, "get_group_messages");
-      } else if (recipient !== "saved") {
+      } else if (recipient?.type !== "saved") {
         await fetchMessages(user._id, recipient._id, "get_messages");
       } else {
         await fetchSavedMessages(user._id);
@@ -58,29 +62,35 @@ export const RightSection = ({ setRightSide, recipient }) => {
   }, [recipient]);
 
   return (
-    <div className="flex w-full h-full">
+    <div className="flex w-full h-screen lg:h-600 ">
       <div className="shadow-lg h-full flex w-full flex-col">
-        <div className=" z-10 w-full px-3 py-2 shadow-md h-12 rounded-tr-md  bg-white font-medium">
+        <div className="relative w-full px-3 py-2 shadow-md h-12 rounded-tr-md  bg-white font-medium">
+          <i
+            role="button"
+            className="md:hidden fa fa-arrow-left mt-2 mr-3"
+            onClick={() => navigate(-1)}
+          />
           {headerTitle}
           {recipient !== "saved" && (
             <i
+              role="button"
+              aria-label="Menu Button"
               className="float-right fa fa-ellipsis-v mt-1"
               onClick={() => setShowMenu(!showMenu)}
-            ></i>
+            />
           )}
           {showMenu && (
             <ChatMenu
               recipient={recipient}
               setShowRecipientDetails={setShowRecipientDetails}
               setShowMenu={setShowMenu}
-              setRightSide={setRightSide}
             />
           )}
         </div>
 
         <div
           id="messages"
-          className="overflow-y-auto px-5 pt-3 h-full shadow-inner"
+          className="overflow-y-auto px-5 h-full shadow-inner bg-back"
         >
           {messagesLoading ? (
             <div className="flex justify-center">
@@ -100,7 +110,7 @@ export const RightSection = ({ setRightSide, recipient }) => {
               return (
                 <div key={msg.messageId}>
                   {showDate && (
-                    <p className="w-full flex justify-center mb-3">
+                    <p className="w-full flex justify-center my-3">
                       <span className="shadow-lg rounded-full py-1 px-2 font-normal">
                         {date}
                       </span>
@@ -122,7 +132,6 @@ export const RightSection = ({ setRightSide, recipient }) => {
       {showRecipientDetails && (
         <Info
           recipient={recipient}
-          setRightSide={setRightSide}
           setShowRecipientDetails={setShowRecipientDetails}
         />
       )}
