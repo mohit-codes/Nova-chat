@@ -42,7 +42,7 @@ export const ChatMenu = ({
     navigate(-1);
   };
   return (
-    <div className="max-w-min ml-auto whitespace-nowrap bg-background text-sm z-20 text-white rounded-md cursor-pointer">
+    <div className="absolute right-8 top-4 whitespace-nowrap bg-background text-sm text-white rounded-md cursor-pointer">
       <div
         className="py-1 px-2 "
         onClick={() => {

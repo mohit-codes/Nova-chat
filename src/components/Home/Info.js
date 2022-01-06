@@ -5,7 +5,9 @@ import { GroupMembers } from "./GroupMembers";
 import { useEffect } from "react";
 import { axiosDelete } from "../../utils/utils";
 import { useData } from "../../context/dataProvider";
-export const Info = ({ recipient, setRightSide, setShowRecipientDetails }) => {
+import { navigate } from "@reach/router";
+
+export const Info = ({ recipient, setShowRecipientDetails }) => {
   const { user } = useAuth();
   const isAdmin = recipient?.admin === user._id;
   const time = dayjs(recipient.createdAt).format("h.mm a");
@@ -25,19 +27,19 @@ export const Info = ({ recipient, setRightSide, setShowRecipientDetails }) => {
   const deleteGroup = async () => {
     await axiosDelete("groups", recipient._id);
     removeGroup(recipient._id);
-    setRightSide(null);
+    navigate(-1);
   };
 
   return (
-    <div className="w-1/2">
-      <div className=" z-10 flex items-center w-full px-3 justify-between shadow-md h-11 rounded-tr-md  bg-white font-medium">
+    <div className="absolute w-full h-screen md:h-full md:w-3/5 lg:static bg-back">
+      <div className="relative z-10  flex items-center w-full px-3 justify-between shadow-md h-11 rounded-tr-md  bg-white font-medium">
         <span>Info</span>
         <i
           className="fa fa-close"
           onClick={() => setShowRecipientDetails(false)}
         ></i>
       </div>
-      <div className="flex flex-col overflow-y-auto h-550">
+      <div className="flex flex-col overflow-y-auto h-600">
         <div className="border-2 border-gray-200 mt-4 px-3 py-2 text-sm bg-white">
           <i className="far fa-calendar-alt mr-2"></i>
           <span>{`${

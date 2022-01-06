@@ -1,6 +1,6 @@
 export const CreateMenu = ({ setShowStartMessage, setShowCreateGroupForm }) => {
   return (
-    <div className="flex mb-3 px-3 mt-3 justify-between">
+    <div className="flex mb-3 px-3 mt-3 justify-evenly md:justify-between">
       <button
         onClick={() => setShowStartMessage(true)}
         className="bg-white rounded-full px-3 py-1 shadow-md"
