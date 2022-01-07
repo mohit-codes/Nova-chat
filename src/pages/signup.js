@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Input } from "../components/input";
+import { Input, PasswordField } from "../components/FormComponents";
 import { useAuth } from "../context/authProvider";
 import { Link, useNavigate } from "@reach/router";
 import useDocumentTitle from "../hooks/useDocumentTitle";
+
 export const Signup = () => {
   const navigate = useNavigate();
   const { signupWithUserCredentials, emailValidate } = useAuth();
@@ -10,7 +11,6 @@ export const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -55,9 +55,9 @@ export const Signup = () => {
     <div className="min-h-screen pt-14 background-gif">
       <div className="text-center mr-auto ml-auto bg-white max-w-sm rounded-md">
         <div className="pt-7">
-          <h1 className="md:text-5xl font-bold text-2xl">Nova Chat</h1>
+          <h1 className="text-5xl font-bold">Nova Chat</h1>
         </div>
-        <div className=" py-10 px-3 ">
+        <div className="py-10 px-3">
           {error !== "" && <p className="text-red-600 mb-2">{error}</p>}
           <form onSubmit={(event) => signupHandler(event)}>
             <div className="mb-3">
@@ -82,30 +82,13 @@ export const Signup = () => {
                 }}
               />
             </div>
-            <div className="my-3 border-2 border-black w-72 py-2 px-3 text-left  rounded-md ml-9">
-              <input
-                required
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                className="outline-none"
-                value={password}
-                onChange={(e) => {
-                  setError("");
-                  setPassword(e.target.value);
-                }}
-              />
-              {showPassword ? (
-                <i
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="fa fa-eye-slash ml-14 cursor-pointer"
-                />
-              ) : (
-                <i
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="fa fa-eye ml-14 cursor-pointer"
-                />
-              )}
-            </div>
+            <PasswordField
+              value={password}
+              callback={(e) => {
+                setError("");
+                setPassword(e.target.value);
+              }}
+            />
             <div>
               <Input
                 type="password"
@@ -119,7 +102,7 @@ export const Signup = () => {
             </div>
             <button
               type="submit"
-              className={`mt-8  w-72 py-2 rounded-md text-white ${
+              className={`mt-8 w-full md:w-72 py-2 rounded-md text-white ${
                 email === "" || password === "" || name === ""
                   ? "cursor-not-allowed bg-gray-500"
                   : "cursor-pointer bg-blue-800"
@@ -131,7 +114,7 @@ export const Signup = () => {
           </form>
           <p className="my-3">OR</p>
           <Link to="/">
-            <button className="border-2 border-background w-72 rounded-md h-10 hover:bg-background hover:text-white ">
+            <button className="border-2 border-background w-full md:w-72 rounded-md h-10 hover:bg-background hover:text-white ">
               {" "}
               Login
             </button>

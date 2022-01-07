@@ -41,7 +41,9 @@ export const DataProvider = ({ children }) => {
   }, []);
 
   const addRecipient = (item) => {
-    setRecipients((prevData) => [...prevData, item]);
+    if (recipients.findIndex((r) => r._id === item.sender._id) === -1) {
+      setRecipients((prevData) => [...prevData, item]);
+    }
   };
 
   const removeRecipient = (id) => {

@@ -1,3 +1,4 @@
+import { navigate } from "@reach/router";
 import axios from "axios";
 import { useEffect } from "react";
 import { useAuth } from "../../context/authProvider";
@@ -8,7 +9,6 @@ export const ChatMenu = ({
   recipient,
   setShowRecipientDetails,
   setShowMenu,
-  setRightSide,
 }) => {
   const { user } = useAuth();
   const { removeRecipient, removeGroup } = useData();
@@ -30,7 +30,7 @@ export const ChatMenu = ({
       },
     });
     removeRecipient(recipient._id);
-    setRightSide(null);
+    navigate(-1);
   };
 
   const leaveGroupHandler = async () => {
@@ -39,10 +39,10 @@ export const ChatMenu = ({
       memberId: user._id,
     });
     removeGroup(recipient._id);
-    setRightSide(null);
+    navigate(-1);
   };
   return (
-    <div className="max-w-min ml-auto whitespace-nowrap bg-background text-sm z-20 text-white rounded-md cursor-pointer">
+    <div className="absolute right-8 top-4 whitespace-nowrap bg-background text-sm text-white rounded-md cursor-pointer">
       <div
         className="py-1 px-2 "
         onClick={() => {

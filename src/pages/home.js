@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { LeftSection, RightSection } from "../components/index";
+import { LeftSection } from "../components/index";
 import { useAuth } from "../context/authProvider";
 import { useSocket } from "../context/socket";
 import { DataProvider } from "../context/dataProvider";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import { Settings } from "../components/Home/Settings";
 
-export const Home = () => {
-  const [rightSide, setRightSide] = useState(null);
+export const Home = (props) => {
   const [leftSide, setLeftSide] = useState(false);
   const { user } = useAuth();
   const socket = useSocket();
@@ -16,6 +15,7 @@ export const Home = () => {
   useEffect(() => {
     socket.emit("connectUser", { name: user.name });
   }, []);
+
   return (
     <DataProvider>
       <div className="min-h-screen bg-background lg:px-36 lg:pt-14">
@@ -23,22 +23,19 @@ export const Home = () => {
           {leftSide ? (
             <Settings setLeftSide={setLeftSide} />
           ) : (
-            <LeftSection
-              setLeftSide={setLeftSide}
-              setRightSide={setRightSide}
-            />
+            <LeftSection setLeftSide={setLeftSide} />
           )}
-          <div className="w-full h-full">
-            {rightSide == null ? (
-              <div className="flex bg-cyanShade h-full justify-center rounded-r-md items-center">
-                <p className="text-2xl text-white font-bold animate-bounce">
-                  Nova Chat
-                </p>
-              </div>
-            ) : (
-              <RightSection setRightSide={setRightSide} recipient={rightSide} />
-            )}
-          </div>
+          {props.location.pathname === "/home" ? (
+            <div className="hidden md:flex bg-cyanShade h-full justify-center rounded-r-md items-center w-full">
+              <p className="text-2xl text-white font-bold animate-bounce">
+                Nova Chat
+              </p>
+            </div>
+          ) : (
+            <div className="absolute md:static w-full lg:w-full h-full">
+              {props.children}
+            </div>
+          )}
         </div>
       </div>
     </DataProvider>

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import axios from "axios";
 import { useState } from "react";
 import { useAuth } from "../../context/authProvider";
@@ -25,7 +24,7 @@ export const Settings = ({ setLeftSide }) => {
   };
 
   return (
-    <div className="w-1/3 flex flex-col pb-2">
+    <div className="w-full md:w-2/3 lg:w-1/3 flex flex-col pb-2">
       <div className="shadow-md h-12 flex items-center px-3">
         <i className="fa fa-arrow-left" onClick={() => setLeftSide(false)}></i>
         <span className="font-medium ml-5">Settings</span>
