@@ -39,10 +39,7 @@ export const LeftSection = ({ setLeftSide }) => {
           setShowCreateGroupForm={setShowCreateGroupForm}
         />
         {showStartMessage && (
-          <StartConversation
-            addRecipient={addRecipient}
-            setShowStartMessage={setShowStartMessage}
-          />
+          <StartConversation setShowStartMessage={setShowStartMessage} />
         )}
         {showCreateGroupForm && (
           <CreateGroupForm setShowCreateGroupForm={setShowCreateGroupForm} />

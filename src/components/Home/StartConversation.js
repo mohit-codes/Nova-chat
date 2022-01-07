@@ -1,13 +1,17 @@
 import axios from "axios";
 import { useState } from "react";
 import { useAuth } from "../../context/authProvider";
+import { useData } from "../../context/dataProvider";
 import { useSocket } from "../../context/socket";
 import { BASE_URL } from "../../utils/utils";
-export const StartConversation = ({ setShowStartMessage, addRecipient }) => {
+
+export const StartConversation = ({ setShowStartMessage }) => {
   const socket = useSocket();
   const { user, emailValidate } = useAuth();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const { addRecipient } = useData();
+
   const startMessage = async (event) => {
     event.preventDefault();
     if (emailValidate(email)) {
@@ -29,6 +33,7 @@ export const StartConversation = ({ setShowStartMessage, addRecipient }) => {
     }
     setError("enter valid email");
   };
+
   return (
     <div className="w-full px-2 mb-2">
       {error !== "" && <p className="text-red-500 text-center">{error}</p>}
