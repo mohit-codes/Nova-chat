@@ -10,6 +10,7 @@ export const CreateGroupForm = ({ setShowCreateGroupForm }) => {
   const [description, setDescription] = useState("");
   const { user } = useAuth();
   const { addGroup } = useData();
+
   const createGroupHandle = async (e) => {
     e.preventDefault();
     setName("");
@@ -25,6 +26,7 @@ export const CreateGroupForm = ({ setShowCreateGroupForm }) => {
     addGroup(group);
     setShowCreateGroupForm(false);
   };
+
   return (
     <div className="w-full px-2 mb-2">
       {error !== "" && <p className="text-red-500 text-center">{error}</p>}
