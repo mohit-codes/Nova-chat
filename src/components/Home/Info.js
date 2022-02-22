@@ -39,7 +39,7 @@ export const Info = ({ recipient, setShowRecipientDetails }) => {
           onClick={() => setShowRecipientDetails(false)}
         ></i>
       </div>
-      <div className="flex flex-col overflow-y-auto h-600">
+      <div className="flex flex-col overflow-y-auto">
         <div className="border-2 border-gray-200 mt-4 px-3 py-2 text-sm bg-white">
           <i className="far fa-calendar-alt mr-2"></i>
           <span>{`${
@@ -55,7 +55,7 @@ export const Info = ({ recipient, setShowRecipientDetails }) => {
         )}
         {isGroup && <GroupMembers group={recipient} isAdmin={isAdmin} />}
         {isAdmin && (
-          <div className="border-2 border-gray-200 mt-auto px-3 py-2">
+          <div className="border-2 border-gray-200 px-3 py-2">
             <div
               className="flex justify-between items-center text-red-600 cursor-pointer"
               onClick={() => deleteGroup()}
