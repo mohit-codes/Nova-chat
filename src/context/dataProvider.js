@@ -89,9 +89,11 @@ export const DataProvider = ({ children }) => {
     setMessagesLoading(false);
   };
 
-  const messageDeleteHandler = async (id, recipient) => {
+  const messageDeleteHandler = async (msg) => {
+    const id = msg.messageId;
+    const isItSavedMessage = msg.sender ? false : true;
     setMessages((prevState) => prevState.filter((msg) => msg.messageId !== id));
-    if (recipient !== "saved") {
+    if (!isItSavedMessage) {
       await axiosDelete("messages", id);
     } else {
       await deleteSavedMessage(user, id);

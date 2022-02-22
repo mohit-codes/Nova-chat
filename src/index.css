@@ -21,6 +21,11 @@ i {
   cursor: pointer;
 }
 
+button:disabled {
+  cursor: not-allowed;
+  background-color: #d1d5db !important;
+}
+
 @media (min-width: 768px) {
   .background-gif {
     background: url(assets/background.svg) no-repeat beige;

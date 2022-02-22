@@ -17,6 +17,8 @@ export const Signup = () => {
   useDocumentTitle("Sign up | Nova Chat");
 
   const matchPassword = confirmPassword === password && confirmPassword !== "";
+  const isEmptyFields =
+    !email.trim().length || !password.trim().length || !name.trim().length;
 
   const isPasswordValid = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,32}$/.test(
     password
@@ -102,12 +104,8 @@ export const Signup = () => {
             </div>
             <button
               type="submit"
-              className={`mt-8 w-full md:w-72 py-2 rounded-md text-white ${
-                email === "" || password === "" || name === ""
-                  ? "cursor-not-allowed bg-gray-500"
-                  : "cursor-pointer bg-blue-800"
-              }`}
-              disabled={email === "" || password === "" || name === ""}
+              className="mt-8 w-full md:w-72 py-2 rounded-md text-white bg-blue-800"
+              disabled={isEmptyFields}
             >
               {loading ? "Signing Up..." : "Sign up"}
             </button>

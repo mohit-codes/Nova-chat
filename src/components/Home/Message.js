@@ -14,7 +14,7 @@ const Message = ({ msg, isAdmin, isGroup, messageDeleteHandler }) => {
     <div
       onMouseEnter={() => setShowMessageOptions(true)}
       onMouseLeave={() => setShowMessageOptions(false)}
-      className="flex w-full relative items-end"
+      className="flex w-full relative items-end my-2"
     >
       <div
         className={`relative w-min whitespace-nowrap py-2  px-3 rounded-3xl shadow-xl  ${
@@ -30,7 +30,7 @@ const Message = ({ msg, isAdmin, isGroup, messageDeleteHandler }) => {
             className={`absolute fa fa-trash text-red-500 bottom-0
             ${isMessageSentByClient ? "-left-7" : "-right-7"}
           `}
-            onClick={() => messageDeleteHandler(msg.messageId)}
+            onClick={() => messageDeleteHandler(msg)}
           />
         )}
         {isGroup && (
