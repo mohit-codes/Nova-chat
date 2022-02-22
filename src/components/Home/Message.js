@@ -30,7 +30,7 @@ const Message = ({ msg, isAdmin, isGroup, messageDeleteHandler }) => {
             className={`absolute fa fa-trash text-red-500 bottom-0
             ${isMessageSentByClient ? "-left-7" : "-right-7"}
           `}
-            onClick={() => messageDeleteHandler(msg.messageId)}
+            onClick={() => messageDeleteHandler(msg)}
           />
         )}
         {isGroup && (
