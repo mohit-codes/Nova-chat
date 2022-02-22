@@ -10,33 +10,30 @@ export const SendMessageComponent = ({ recipient, isGroup }) => {
   const [message, setMessage] = useState("");
   const socket = useSocket();
 
-  const saveMsgHandler = async (e) => {
-    e.preventDefault();
-    setMessage("");
-    socket.emit("saveMessage", {
-      user: user,
-      message: message,
-    });
-  };
-
   const sendHandler = async (e) => {
     e.preventDefault();
     setMessage("");
-    socket.emit("sendMessage", {
-      sender: user,
-      receiver: recipient,
-      message: message,
-    });
-  };
-
-  const sendGroupMassageHandler = async (e) => {
-    e.preventDefault();
-    setMessage("");
-    socket.emit("sendGroupMessage", {
-      sender: user,
-      group: recipient,
-      message: message,
-    });
+    if (recipient?.type === "saved") {
+      socket.emit("saveMessage", {
+        user: user,
+        message: message,
+      });
+      return;
+    }
+    if (isGroup) {
+      socket.emit("sendGroupMessage", {
+        sender: user,
+        group: recipient,
+        message: message,
+      });
+      return;
+    } else {
+      socket.emit("sendMessage", {
+        sender: user,
+        receiver: recipient,
+        message: message,
+      });
+    }
   };
 
   return (
@@ -64,13 +61,7 @@ export const SendMessageComponent = ({ recipient, isGroup }) => {
       )}
       <form
         className="flex items-center py-2 w-full"
-        onSubmit={(e) =>
-          recipient === "saved"
-            ? saveMsgHandler(e)
-            : isGroup
-            ? sendGroupMassageHandler(e)
-            : sendHandler(e)
-        }
+        onSubmit={(e) => sendHandler(e)}
       >
         <textarea
           type="text"
