@@ -46,6 +46,11 @@ export const RightSection = () => {
         group: recipient,
       });
     }
+    return () => {
+      socket.off("message", addMessageCallback);
+      socket.off("groupMessage", addMessageCallback);
+      socket.off("savedMessage", addMessageCallback);
+    };
   }, []);
 
   useEffect(() => {
@@ -93,12 +98,12 @@ export const RightSection = () => {
           className="overflow-y-auto px-5 h-full shadow-inner bg-back"
         >
           {messagesLoading ? (
-            <div className="flex justify-center">
+            <div className="flex justify-center mt-4">
               <Spinner />
             </div>
           ) : (
             messages.map((msg, index) => {
-              const currentDate = dayjs(msg.createdAt).format("DD-MM-YYYY");
+              const currentDate = dayjs(msg?.createdAt).format("DD-MM-YYYY");
               let showDate =
                 index === 0 ? true : date === currentDate ? false : true;
               date =
@@ -108,7 +113,7 @@ export const RightSection = () => {
                   ? date
                   : currentDate;
               return (
-                <div key={msg.messageId}>
+                <div key={msg?.messageId}>
                   {showDate && (
                     <p className="w-full flex justify-center my-3">
                       <span className="shadow-lg rounded-full py-1 px-2 font-normal">
