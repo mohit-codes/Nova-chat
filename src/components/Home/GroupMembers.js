@@ -71,7 +71,7 @@ export const GroupMembers = ({ group, isAdmin }) => {
           </form>
         </div>
       )}
-      <div className="h-72 overflow-y-auto">
+      <div className="h-44 overflow-y-auto">
         <div className="border-2 border-gray-200 bg-white mt-4 px-3 py-2">
           <div className="flex justify-between items-center">
             <span>Members</span>
