@@ -5,11 +5,10 @@ import { useSocket } from "../context/socket";
 import { DataProvider } from "../context/dataProvider";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import { Settings } from "../components/Home/Settings";
-
-export const Home = (props) => {
+const Home = (props) => {
   const [leftSide, setLeftSide] = useState(false);
   const { user } = useAuth();
-  const socket = useSocket();
+  const socket = useSocket((state) => state.socket);
   useDocumentTitle("Nova Chat");
 
   useEffect(() => {
@@ -41,3 +40,5 @@ export const Home = (props) => {
     </DataProvider>
   );
 };
+
+export default Home;

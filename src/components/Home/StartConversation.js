@@ -6,7 +6,7 @@ import { useSocket } from "../../context/socket";
 import { BASE_URL } from "../../utils/utils";
 
 export const StartConversation = ({ setShowStartMessage }) => {
-  const socket = useSocket();
+  const socket = useSocket((state) => state.socket);
   const { user, emailValidate } = useAuth();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
