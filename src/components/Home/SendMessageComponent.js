@@ -8,7 +8,7 @@ export const SendMessageComponent = ({ recipient, isGroup }) => {
   const { user } = useAuth();
   const [showEmojis, setShowEmojis] = useState(false);
   const [message, setMessage] = useState("");
-  const socket = useSocket();
+  const socket = useSocket((state) => state.socket);
 
   const sendHandler = async (e) => {
     e.preventDefault();

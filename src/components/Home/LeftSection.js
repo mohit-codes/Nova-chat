@@ -13,7 +13,7 @@ import { Spinner } from "../Spinner";
 import { Link } from "@reach/router";
 
 export const LeftSection = ({ setLeftSide }) => {
-  const socket = useSocket();
+  const socket = useSocket((state) => state.socket);
   const [showStartMessage, setShowStartMessage] = useState(false);
   const [showCreateGroupForm, setShowCreateGroupForm] = useState(false);
   const { groups, recipients, addRecipient, loading } = useData();

@@ -1,7 +1,9 @@
 import socketio from "socket.io-client";
 import { BASE_URL } from "../utils/utils";
-import React, { useContext } from "react";
+import { create } from "zustand";
 
 export const socket = socketio(BASE_URL);
-export const SocketContext = React.createContext();
-export const useSocket = () => useContext(SocketContext);
+
+export const useSocket = create(() => ({
+  socket: socket,
+}));

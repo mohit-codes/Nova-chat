@@ -10,7 +10,7 @@ import { Info } from "./Info";
 import Message from "./Message";
 import { SendMessageComponent } from "./SendMessageComponent";
 
-export const RightSection = () => {
+const RightSection = () => {
   const { user } = useAuth();
   const {
     messagesLoading,
@@ -32,7 +32,7 @@ export const RightSection = () => {
       ? true
       : false
     : true;
-  const socket = useSocket();
+  const socket = useSocket((state) => state.socket);
   let date;
 
   useEffect(() => {
@@ -143,3 +143,5 @@ export const RightSection = () => {
     </div>
   );
 };
+
+export default RightSection;
